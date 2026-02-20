@@ -1,0 +1,11 @@
+<resources>
+
+    <!--Jenis Qurban-->
+    <string name="qurban_type_goat">Kambing</string>
+    <string name="qurban_type_sheep">Domba</string>
+    <string name="qurban_type_cow">Sapi</string>
+
+    <!--Status Qurban-->
+    <string name="qurban_status_recipient">Penerima</string>
+    <string name="qurban_status_participant">Peserta</string>
+</resources>
