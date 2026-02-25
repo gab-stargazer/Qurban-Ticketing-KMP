@@ -14,6 +14,10 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
+    }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -26,6 +30,14 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+
+            //  Accompanist
+            implementation("com.google.accompanist:accompanist-permissions:0.37.3")
+
+            //  Koin
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -76,6 +88,12 @@ kotlin {
 
             //  Kermit
             implementation("co.touchlab:kermit:2.0.8")
+
+            //  Retable
+            implementation(libs.retable)
+
+            //  KmpFile
+            implementation("dev.zwander:kmpfile:0.8.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -101,6 +119,9 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
     buildTypes {

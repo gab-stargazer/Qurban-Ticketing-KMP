@@ -1,3 +1,5 @@
+import java.net.URI
+
 rootProject.name = "QurbanTicketing"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -25,6 +27,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven { url = URI.create("https://jitpack.io") }
     }
 }
 
