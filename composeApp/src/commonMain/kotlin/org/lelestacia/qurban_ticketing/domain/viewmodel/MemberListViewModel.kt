@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
-import org.lelestacia.qurban_ticketing.domain.model.Member
-import org.lelestacia.qurban_ticketing.domain.repository.MemberRepository
+import org.lelestacia.qurban_ticketing.domain.model.User
+import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
 
 class MemberListViewModel(
-    private val repository: MemberRepository
+    private val repository: UserRepository
 ) : ViewModel() {
 
-    fun getMember(): Flow<PagingData<Member>> = repository
-        .getMember()
+    fun getMember(): Flow<PagingData<User>> = repository
+        .getUsers("")
         .cachedIn(viewModelScope)
 }

@@ -5,14 +5,14 @@ package org.lelestacia.qurban_ticketing.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.lelestacia.qurban_ticketing.domain.model.Member
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
+import org.lelestacia.qurban_ticketing.domain.model.User
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Entity(tableName = "member")
-data class MemberEntity(
+@Entity(tableName = "user")
+data class UserEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id")
@@ -20,9 +20,6 @@ data class MemberEntity(
 
     @ColumnInfo(name = "name")
     val name: String,
-
-    @ColumnInfo(name = "phone_number")
-    val phone: String?,
 
     @ColumnInfo(name = "address")
     val address: String?,
@@ -35,21 +32,19 @@ data class MemberEntity(
 )
 
 
-fun MemberEntity.toDomain(): Member =
-    Member(
+fun UserEntity.toDomain(): User =
+    User(
         id = Uuid.parse(id),
         name = name,
-        phoneNumber = phone,
         address = address,
         status = status,
         type = type,
     )
 
-fun Member.toEntity(): MemberEntity =
-    MemberEntity(
+fun User.toEntity(): UserEntity =
+    UserEntity(
         id = id.toString(),
         name = name,
-        phone = phoneNumber,
         address = address,
         status = status,
         type = type,

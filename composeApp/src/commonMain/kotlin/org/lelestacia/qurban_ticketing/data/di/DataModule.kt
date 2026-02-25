@@ -6,10 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.binds
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import org.lelestacia.qurban_ticketing.data.dao.MemberDao
+import org.lelestacia.qurban_ticketing.data.dao.UserDao
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
-import org.lelestacia.qurban_ticketing.data.repository.MemberRepositoryImpl
-import org.lelestacia.qurban_ticketing.domain.repository.MemberRepository
+import org.lelestacia.qurban_ticketing.data.repository.UserRepositoryImpl
+import org.lelestacia.qurban_ticketing.data.repository.UtilRepositoryImpl
+import org.lelestacia.qurban_ticketing.data.utility.ExcelUtility
+import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
+import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
 
 val dataModule = module {
     single<QurbanDB> {
@@ -19,11 +22,17 @@ val dataModule = module {
             .build()
     }
 
-    single<MemberDao> {
+    single<UserDao> {
         get<QurbanDB>().memberDao()
     }
 
-    singleOf(::MemberRepositoryImpl) {
-        binds(listOf(MemberRepository::class))
+    singleOf(::ExcelUtility)
+
+    singleOf(::UserRepositoryImpl) {
+        binds(listOf(UserRepository::class))
+    }
+
+    singleOf(::UtilRepositoryImpl) {
+        binds(listOf(UtilRepository::class))
     }
 }
