@@ -29,7 +29,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
-import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditEvent.*
+import org.lelestacia.qurban_ticketing.ui.mobile.UserAddEditBanner
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.QurbanStatusDropdownMenu
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.QurbanTypeDropdownMenu
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.*
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditState
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.ADD
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
@@ -52,7 +57,7 @@ fun UserAddEditScreen(
     Column(
         modifier = modifier
     ) {
-        org.lelestacia.qurban_ticketing.ui.mobile.UserAddEditHeader(
+        UserAddEditBanner(
             screenType = state.screenType,
             onBackPressed = onBackPressed
         )

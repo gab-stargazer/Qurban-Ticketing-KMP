@@ -8,7 +8,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
-import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditViewmodel
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.Dashboard

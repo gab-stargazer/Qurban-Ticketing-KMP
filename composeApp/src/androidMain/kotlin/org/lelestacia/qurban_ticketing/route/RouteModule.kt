@@ -9,8 +9,8 @@ import org.koin.core.parameter.parameterSetOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 import org.lelestacia.qurban_ticketing.ui.MainMenu
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditScreen
-import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementScreen
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.util.Navigator

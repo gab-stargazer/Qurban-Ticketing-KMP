@@ -1,5 +1,6 @@
-package org.lelestacia.qurban_ticketing.ui.user_add_edit
+package org.lelestacia.qurban_ticketing.ui.user.add_edit
 
+import androidx.compose.runtime.Immutable
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
@@ -12,12 +13,16 @@ import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.error_name_cannot_be_empty
 
 @optics
+@Immutable
 data class UserAddEditState(
     val screenType: ScreenType,
+
+    //  Name and Address
     val name: String = "",
     val nameError: StringResource? = null,
     val address: String = "",
 
+    //  Status and Type
     val qurbanStatus: Status = Status.Recipient,
     val qurbanType: Type = Type.Cow,
 

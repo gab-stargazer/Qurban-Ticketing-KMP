@@ -28,7 +28,7 @@ import qurbanticketing.composeapp.generated.resources.*
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun UserAddEditHeader(
+fun UserAddEditBanner(
     screenType: ScreenType,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier

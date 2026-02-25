@@ -137,10 +137,13 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    add("kspCommonMainMetadata", libs.arrow.optics.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
+    add("kspAndroid", libs.arrow.optics.compiler)
 //    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 //    add("kspIosX64", libs.androidx.room.compiler)
     add("kspJvm", libs.androidx.room.compiler)
+    add("kspJvm", libs.arrow.optics.compiler)
 }
 
 room {

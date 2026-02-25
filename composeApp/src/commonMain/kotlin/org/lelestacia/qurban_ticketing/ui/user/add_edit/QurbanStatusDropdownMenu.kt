@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.user_add_edit
+package org.lelestacia.qurban_ticketing.ui.user.add_edit
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,52 +8,57 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.text.font.FontWeight
 import org.jetbrains.compose.resources.stringResource
-import org.lelestacia.qurban_ticketing.domain.model.Type
+import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
-import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditEvent.OnTypeChanged
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.OnStatusChanged
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
-import qurbanticketing.composeapp.generated.resources.*
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.label_qurban_status
+import qurbanticketing.composeapp.generated.resources.qurban_status_participant
+import qurbanticketing.composeapp.generated.resources.qurban_status_recipient
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
-fun QurbanTypeDropdownMenu(
-    type: Type,
-    onQurbanTypeChanged: (UserAddEditEvent) -> Unit,
+fun QurbanStatusDropdownMenu(
+    status: Status,
+    onQurbanStatusChanged: (UserAddEditEvent) -> Unit,
     focusManager: FocusManager,
     modifier: Modifier = Modifier
 ) {
     val screenPadding = LocalScreenPadding.current
-    var isQurbanTypeExpanded by remember { mutableStateOf(false) }
+    var isQurbanStatusExpanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
-        expanded = isQurbanTypeExpanded,
+        expanded = isQurbanStatusExpanded,
         onExpandedChange = { newState ->
-            // STOPSHIP: Check this issue
-            isQurbanTypeExpanded = newState
+            // STOPSHIP: Investigate whether this is an IDE issue or not
+            isQurbanStatusExpanded = newState
         },
-        modifier = modifier
-            .padding(horizontal = screenPadding.horizontal)
+        modifier = modifier.padding(horizontal = screenPadding.horizontal)
     ) {
         CustomTextField(
             value =
                 stringResource(
-                    when (type) {
-                        Type.Cow -> Res.string.qurban_type_cow
-                        Type.Goat -> Res.string.qurban_type_goat
-                        Type.Sheep -> Res.string.qurban_type_sheep
+                    when (status) {
+                        Status.Recipient -> Res.string.qurban_status_recipient
+                        Status.Participant -> Res.string.qurban_status_participant
                     }
                 ),
             onValueChange = {},
             readOnly = true,
             label = {
                 Text(
-                    text = stringResource(Res.string.label_qurban_type),
+                    text = stringResource(Res.string.label_qurban_status),
                     style = MaterialTheme.typography.labelMediumEmphasized.copy(
                         fontWeight = FontWeight.SemiBold
                     )
                 )
             },
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(isQurbanTypeExpanded)
+                ExposedDropdownMenuDefaults.TrailingIcon(isQurbanStatusExpanded)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -61,20 +66,19 @@ fun QurbanTypeDropdownMenu(
         )
 
         ExposedDropdownMenu(
-            expanded = isQurbanTypeExpanded,
+            expanded = isQurbanStatusExpanded,
             onDismissRequest = {
-                isQurbanTypeExpanded = false
-            }
+                isQurbanStatusExpanded = false
+            },
         ) {
-            Type.entries.forEach { newType ->
+            Status.entries.forEach { status ->
                 DropdownMenuItem(
                     text = {
                         Text(
                             text = stringResource(
-                                when (newType) {
-                                    Type.Cow -> Res.string.qurban_type_cow
-                                    Type.Goat -> Res.string.qurban_type_goat
-                                    Type.Sheep -> Res.string.qurban_type_sheep
+                                when (status) {
+                                    Status.Recipient -> Res.string.qurban_status_recipient
+                                    Status.Participant -> Res.string.qurban_status_participant
                                 }
                             ),
                             style = MaterialTheme.typography.labelSmall.copy(
@@ -83,8 +87,8 @@ fun QurbanTypeDropdownMenu(
                         )
                     },
                     onClick = {
-                        onQurbanTypeChanged(OnTypeChanged(newType))
-                        isQurbanTypeExpanded = false
+                        onQurbanStatusChanged(OnStatusChanged(newStatus = status))
+                        isQurbanStatusExpanded = false
                         focusManager.clearFocus()
                     }
                 )

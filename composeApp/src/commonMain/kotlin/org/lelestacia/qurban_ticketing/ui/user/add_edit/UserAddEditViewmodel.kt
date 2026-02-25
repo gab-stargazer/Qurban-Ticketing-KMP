@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.user_add_edit
+package org.lelestacia.qurban_ticketing.ui.user.add_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,13 +11,12 @@ import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.model.isParticipant
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
 import org.lelestacia.qurban_ticketing.util.Navigator
-import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType
-import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
+import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class UserAddEditViewmodel(
-    private val screenType: ScreenType,
+    private val screenType: UserAddEdit.ScreenType,
     private val initialData: User?,
     private val navigator: Navigator,
     private val repository: UserRepository,
@@ -106,7 +105,7 @@ class UserAddEditViewmodel(
         }
 
         when (screenType) {
-            ScreenType.ADD -> {
+            UserAddEdit.ScreenType.ADD -> {
                 repository.insertUser(
                     User(
                         id = Uuid.generateV7(),
@@ -120,7 +119,7 @@ class UserAddEditViewmodel(
                 )
             }
 
-            EDIT -> {
+            UserAddEdit.ScreenType.EDIT -> {
                 repository.updateUser(
                     User(
                         id = initialData?.id
