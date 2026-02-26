@@ -10,6 +10,7 @@ import org.lelestacia.qurban_ticketing.data.dao.UserDao
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
 import org.lelestacia.qurban_ticketing.data.repository.UserRepositoryImpl
 import org.lelestacia.qurban_ticketing.data.repository.UtilRepositoryImpl
+import org.lelestacia.qurban_ticketing.data.utility.CouponUtility
 import org.lelestacia.qurban_ticketing.data.utility.ExcelUtility
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
 import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
@@ -27,6 +28,7 @@ val dataModule = module {
     }
 
     singleOf(::ExcelUtility)
+    singleOf(::CouponUtility)
 
     singleOf(::UserRepositoryImpl) {
         binds(listOf(UserRepository::class))

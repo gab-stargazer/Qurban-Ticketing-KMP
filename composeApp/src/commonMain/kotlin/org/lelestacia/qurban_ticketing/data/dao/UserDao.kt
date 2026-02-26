@@ -38,6 +38,15 @@ interface UserDao {
     @Query(
         value = """
             SELECT * FROM user
+            WHERE name like '%' || :name || '%' 
+            ORDER BY name COLLATE NOCASE ASC
+        """
+    )
+    suspend fun getAllUserData(name: String): List<UserEntity>
+
+    @Query(
+        value = """
+            SELECT * FROM user
             WHERE name like '%' || :name || '%' AND status == :status
             ORDER BY name ASC
         """

@@ -71,4 +71,10 @@
 
     <!--Error-->
     <string name="error_name_cannot_be_empty">Name cannot be empty</string>
+
+    <!--Coupon-->
+    <string name="coupon_title">Qurban Coupon %1$s\n</string>
+    <string name="coupon_name_and_information">Name: %1$s %2$s\n</string>
+    <string name="coupon_pickup_location">Location: %1$s \n</string>
+    <string name="coupon_pickup_date">Pickup Date: %1$s</string>
 </resources>

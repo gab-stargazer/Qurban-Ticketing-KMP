@@ -65,6 +65,9 @@ arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
 arrow-optics = { module = "io.arrow-kt:arrow-optics" }
 arrow-optics-compiler = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrow" }
 
+#   Itext
+itext = { module = "com.itextpdf:itext7-core", version = "9.4.0" }
+
 #   Koog
 koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
 koog-agents-tools = { module = "ai.koog:agents-tools", version.ref = "koog" }

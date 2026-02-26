@@ -70,4 +70,10 @@
 
     <!--Error-->
     <string name="error_name_cannot_be_empty">Nama tidak boleh kosong</string>
+
+    <!--Coupon-->
+    <string name="coupon_title">Kupon Qurban %1$s\n</string>
+    <string name="coupon_name_and_information">Nama: %1$s %2$s\n</string>
+    <string name="coupon_pickup_location">Lokasi: %1$s \n</string>
+    <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s</string>
 </resources>

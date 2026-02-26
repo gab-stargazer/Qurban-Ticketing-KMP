@@ -98,6 +98,9 @@ kotlin {
 
             //  KmpFile
             implementation("dev.zwander:kmpfile:0.8.0")
+
+            //   Itext
+            implementation(libs.itext)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

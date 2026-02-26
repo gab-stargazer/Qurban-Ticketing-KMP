@@ -267,7 +267,10 @@ class UserManagementViewModel(
     }
 
     private fun printCoupon() = viewModelScope.launch {
-        //  TODO: Implement later
+        utilRepository.saveCoupons(
+            qurbanLocation = state.value.dialogPrintCouponState.location,
+            qurbanPickupDate = "Test"
+        )
     }
 
     private fun validateDialogPrintCoupon(): DialogPrintCouponValidationResult {
