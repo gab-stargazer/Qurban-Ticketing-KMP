@@ -24,6 +24,7 @@ import org.lelestacia.qurban_ticketing.util.route.UserList
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_show_app_information
 import qurbanticketing.composeapp.generated.resources.btn_show_user_management
+import qurbanticketing.composeapp.generated.resources.tv_main_menu
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -37,7 +38,7 @@ fun MainMenu(
         modifier = Modifier.fillMaxSize()
     ) {
         ManagementTicketingBanner(
-            title = stringResource(Res.string.btn_show_user_management),
+            title = stringResource(Res.string.tv_main_menu),
             isMainMenu = true,
             onBackPressed = {}
         )

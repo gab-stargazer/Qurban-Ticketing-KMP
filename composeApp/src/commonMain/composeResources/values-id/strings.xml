@@ -1,7 +1,7 @@
 <resources>
     <!--Text-->
     <string name="tv_main_menu">Menu Utama</string>
-    <string name="tv_management_banner_title">Manajemen\nPeserta/Penerima</string>
+    <string name="tv_management_banner_title">Manajemen Peserta/Penerima</string>
     <string name="tv_management_name">Nama: %1$s</string>
     <string name="tv_management_status">Status: %1$s</string>
     <string name="tv_management_rt_rw">Rt/RW: %1$s</string>

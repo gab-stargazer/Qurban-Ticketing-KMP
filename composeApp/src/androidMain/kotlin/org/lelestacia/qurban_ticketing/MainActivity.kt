@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         predictivePopTransitionSpec = {
                             fadeIn() togetherWith fadeOut()
                         },
-                        modifier = Modifier.systemBarsPadding()
+                        modifier = Modifier.navigationBarsPadding()
                     )
                 }
             }
