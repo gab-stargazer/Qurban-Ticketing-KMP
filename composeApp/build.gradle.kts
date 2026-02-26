@@ -38,6 +38,10 @@ kotlin {
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.workmanager)
+
+            //  Workmanager
+            implementation(libs.workmanager)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

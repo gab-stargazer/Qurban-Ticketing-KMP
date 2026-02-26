@@ -8,9 +8,9 @@ class UtilRepositoryImpl(
     private val userDao: UserDao,
     private val excelUtility: ExcelUtility
 ) : UtilRepository {
-    override suspend fun importUsersFromExcel(uri: String) {
-        userDao.inserts(
-            excelUtility.importMemberFromExcel(uri)
-        )
+    override suspend fun importUsersFromExcel(uri: String): Int {
+        val users = excelUtility.importMemberFromExcel(uri)
+        userDao.inserts(users)
+        return users.size
     }
 }

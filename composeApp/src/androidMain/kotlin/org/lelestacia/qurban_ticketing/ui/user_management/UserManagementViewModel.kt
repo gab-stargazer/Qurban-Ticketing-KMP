@@ -8,6 +8,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
+import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.domain.model.Status.Participant
 import org.lelestacia.qurban_ticketing.domain.model.Status.Recipient
 import org.lelestacia.qurban_ticketing.domain.model.User
@@ -21,6 +22,7 @@ import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_
 class UserManagementViewModel(
     private val userRepository: UserRepository,
     private val utilRepository: UtilRepository,
+    private val importDataScheduler: BackgroundScheduler
 ) : ViewModel() {
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
@@ -107,9 +109,7 @@ class UserManagementViewModel(
                     )
                 }
 
-                viewModelScope.launch {
-                    utilRepository.importUsersFromExcel(event.uri.toString())
-                }
+                importDataScheduler.execute(event.uri.toString())
             }
 
 
@@ -117,7 +117,6 @@ class UserManagementViewModel(
             is UserManagementEvent.OnFilterTypeChanged -> _filterType.update {
                 event.newFilterType
             }
-
 
             //  Dialog Permission
             UserManagementEvent.OnDialogPermissionDismissed -> _currentState.update { currentState ->

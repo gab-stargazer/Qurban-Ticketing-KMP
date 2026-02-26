@@ -103,7 +103,7 @@ fun UserAddEditBanner(
 
                 Text(
                     text = stringResource(Res.string.btn_back),
-                    style = MaterialTheme.typography.titleSmallEmphasized.copy(
+                    style = MaterialTheme.typography.titleMediumEmphasized.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White
                     )

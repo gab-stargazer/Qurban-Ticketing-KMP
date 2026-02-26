@@ -4,10 +4,17 @@ package org.lelestacia.qurban_ticketing.di
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.workerOf
+import org.koin.core.module.dsl.binds
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.lelestacia.qurban_ticketing.data.ImportDataWorker
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
+import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
+import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.util.Navigator
@@ -27,7 +34,20 @@ val androidModule = module {
         )
     }
 
-    viewModelOf(::UserManagementViewModel)
+    factoryOf(::ImportDataScheduler) {
+        named("Import Data Scheduler")
+        binds(listOf(BackgroundScheduler::class))
+    }
+
+    workerOf(::ImportDataWorker)
+
+    viewModel {
+        UserManagementViewModel(
+            get(),
+            get(),
+            get(qualifier = named(name = "Import Data Scheduler"))
+        )
+    }
     viewModel {
         UserAddEditViewmodel(
             get(),

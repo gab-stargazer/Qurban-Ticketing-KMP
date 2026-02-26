@@ -185,7 +185,10 @@ fun UserManagementScreen(
 
                 FloatingActionButtonMenuItem(
                     onClick = {
-                        lifecycle.handleWhenLifecycleResumed { onNavigateTo(UserAddEdit()) }
+                        lifecycle.handleWhenLifecycleResumed {
+                            onEvent(OnFabMenuStateClicked(newFabMenuState = false))
+                            onNavigateTo(UserAddEdit())
+                        }
                     },
                     icon = {},
                     text = {
@@ -365,6 +368,7 @@ fun UserManagementScreen(
 
                                                             UserItemInteraction.OnEdit -> {
                                                                 lifecycle.handleWhenLifecycleResumed {
+                                                                    onEvent(OnFabMenuStateClicked(newFabMenuState = false))
                                                                     onNavigateTo(
                                                                         UserAddEdit(
                                                                             screenType = EDIT,
