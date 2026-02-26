@@ -62,10 +62,7 @@
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Tanggal pengambilan tidak boleh kosong</string>
 
     <!--Dialog Permission-->
-    <string name="permission_body_notification">Izin Notifikasi diperlukan agar dapat mengirimkan pemberitahuan kepada
-        anda ketika proses selesai dilakukan. Anda dapat menolak izin dan proses tetap akan dilanjutkan, namun kami
-        tidak akan dapat memberikan pemberitahuan kepada anda ketika proses selesai
-    </string>
+    <string name="permission_body_notification">Izin Notifikasi diperlukan agar dapat mengirimkan pemberitahuan kepada anda ketika proses selesai dilakukan. Anda dapat menolak izin dan proses tetap akan dilanjutkan, namun kami tidak akan dapat memberikan pemberitahuan kepada anda ketika proses selesai</string>
     <string name="permission_title_notification">Izin Notifikasi diperlukan (Opsional)</string>
 
     <!--Error-->
@@ -76,4 +73,10 @@
     <string name="coupon_name_and_information">Nama: %1$s %2$s\n</string>
     <string name="coupon_pickup_location">Lokasi: %1$s \n</string>
     <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s</string>
+    <string name="coupon_file_name">Kupon Qurban %1$s.pdf</string>
+
+    <!--Notification-->
+    <string name="notification_title_process_finished">Proses Selesai</string>
+    <string name="notification_body_import_data">Impor data selesai dengan total %1$s data</string>
+    <string name="notification_body_save_coupon">Kupon berhasil disimpan pada folder Dokumen</string>
 </resources>

@@ -43,6 +43,7 @@ import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementEvent.*
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
+import org.lelestacia.qurban_ticketing.util.isNotGranted
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
 import qurbanticketing.composeapp.generated.resources.*
@@ -64,8 +65,9 @@ fun UserManagementScreen(
     val screenPadding = LocalScreenPadding.current
     val keyboardManager = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val users = state.users.collectAsLazyPagingItems()
+
     val lifecycle by lifecycleOwner.lifecycle.currentStateAsState()
+    val users = state.users.collectAsLazyPagingItems()
     val excelSelectionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) {
@@ -78,6 +80,7 @@ fun UserManagementScreen(
         if (state.shouldLaunchExcelLauncher) excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
     }
 
+    //  Permission
     val notificationPermission =
         rememberPermissionState(
             permission = Manifest.permission.POST_NOTIFICATIONS,
@@ -86,6 +89,12 @@ fun UserManagementScreen(
             }
         )
 
+    val writeStoragePermission =
+        rememberPermissionState(
+            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+    //  Dialog
     if (state.isNotificationDialogForImportDataOpened || state.isNotificationDialogForPrintCouponOpened) {
         NotificationPermissionDialog(
             onDismiss = {
@@ -124,6 +133,7 @@ fun UserManagementScreen(
         )
     }
 
+    //  Content
     Scaffold(
         floatingActionButton = {
             FloatingActionButtonMenu(
@@ -163,7 +173,7 @@ fun UserManagementScreen(
                             //  Check for notification only
                             if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
                                 excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                            } else if (Build.VERSION.SDK_INT >= 33) {
+                            } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
                                 onEvent(OnImportDataClicked)
                             } else {
                                 excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
@@ -206,6 +216,11 @@ fun UserManagementScreen(
                 FloatingActionButtonMenuItem(
                     onClick = {
                         lifecycle.handleWhenLifecycleResumed {
+                            if (Build.VERSION.SDK_INT <= 29 && writeStoragePermission.status.isNotGranted()) {
+                                writeStoragePermission.launchPermissionRequest()
+                                return@handleWhenLifecycleResumed
+                            }
+
                             onEvent(OnPrintCouponClicked)
                         }
                     },

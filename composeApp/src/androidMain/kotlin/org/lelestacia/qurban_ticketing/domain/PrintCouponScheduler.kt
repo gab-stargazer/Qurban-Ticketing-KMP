@@ -5,20 +5,21 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import co.touchlab.kermit.Logger
-import org.lelestacia.qurban_ticketing.data.ImportDataWorker
+import org.lelestacia.qurban_ticketing.data.PrintCouponWorker
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 
-class ImportDataScheduler(
+class PrintCouponScheduler(
     private val context: Context
 ) : BackgroundScheduler {
 
     override fun execute(vararg input: Any) {
-        Logger.d("ImportDataScheduler Called with URI: $input")
+        Logger.d("PrintCouponScheduler Called")
 
-        val workRequest = OneTimeWorkRequestBuilder<ImportDataWorker>()
+        val workRequest = OneTimeWorkRequestBuilder<PrintCouponWorker>()
             .setInputData(
                 Data.Builder()
-                    .putString(ImportDataWorker.INPUT_DATA_URL, input[0] as String)
+                    .putString(PrintCouponWorker.LOCATION, input[0] as String)
+                    .putString(PrintCouponWorker.PICKUP_DATE, input[1] as String)
                     .build()
             )
             .build()

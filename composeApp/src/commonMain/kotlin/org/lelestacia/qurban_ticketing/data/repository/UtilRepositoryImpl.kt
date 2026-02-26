@@ -21,9 +21,11 @@ class UtilRepositoryImpl(
         qurbanLocation: String,
         qurbanPickupDate: String
     ) {
-        couponUtility.saveCouponsV2(
+        couponUtility.saveCoupons(
+            qurbanLocation = qurbanLocation,
+            qurbanPickupDate = qurbanPickupDate,
             userData = userDao.getAllUserData("").map {
-                CouponUtility.CouponDataV2(
+                CouponUtility.CouponData(
                     name = it.name,
                     status = it.status,
                     type = it.type ?: Type.Cow

@@ -16,11 +16,11 @@ import org.koin.java.KoinJavaComponent.inject
 import org.lelestacia.qurban_ticketing.R
 import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
 import qurbanticketing.composeapp.generated.resources.Res
-import qurbanticketing.composeapp.generated.resources.notification_body_import_data
+import qurbanticketing.composeapp.generated.resources.notification_body_save_coupon
 import qurbanticketing.composeapp.generated.resources.notification_title_process_finished
 import kotlin.random.Random
 
-class ImportDataWorker(
+class PrintCouponWorker(
     context: Context,
     parameters: WorkerParameters
 ) : CoroutineWorker(context, parameters) {
@@ -28,9 +28,10 @@ class ImportDataWorker(
     private val repository by inject<UtilRepository>(clazz = UtilRepository::class.java)
 
     override suspend fun doWork(): Result {
-        val input: String = inputData.getString(INPUT_DATA_URL)
-            ?: return Result.failure()
-        val userCount = repository.importUsersFromExcel(uri = input)
+         repository.saveCoupons(
+            qurbanLocation = inputData.getString(LOCATION) ?: return Result.failure(),
+            qurbanPickupDate = inputData.getString(PICKUP_DATE) ?: return Result.failure()
+        )
 
         val channel = NotificationChannel(
             "default_channel",
@@ -40,15 +41,14 @@ class ImportDataWorker(
             description = "App general notifications"
         }
 
-
         val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
-        postNotification(userCount)
+        postNotification()
 
         return Result.success()
     }
 
-    private suspend fun postNotification(userCount: Int) {
+    private suspend fun postNotification() {
         val notificationBuilder = NotificationCompat.Builder(applicationContext, "default_channel")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(
@@ -58,8 +58,7 @@ class ImportDataWorker(
             )
             .setContentText(
                 getString(
-                    resource = Res.string.notification_body_import_data,
-                    userCount.toString()
+                    resource = Res.string.notification_body_save_coupon
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -82,6 +81,7 @@ class ImportDataWorker(
     }
 
     companion object {
-        const val INPUT_DATA_URL = "input_url"
+        const val LOCATION = "location"
+        const val PICKUP_DATE = "pickupDate"
     }
 }

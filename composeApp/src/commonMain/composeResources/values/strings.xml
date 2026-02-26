@@ -63,10 +63,7 @@
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Date can't be empty</string>
 
     <!--Dialog Permission-->
-    <string name="permission_body_notification">Notification permission is required to send you a notification when the
-        process is completed. You may decline the permission and the process will still continue; however, we will not
-        be able to notify you once it is finished.
-    </string>
+    <string name="permission_body_notification">Notification permission is required to send you a notification when the process is completed. You may decline the permission and the process will still continue; however, we will not be able to notify you once it is finished.</string>
     <string name="permission_title_notification">Notification Permission Required (Optional)</string>
 
     <!--Error-->
@@ -77,4 +74,10 @@
     <string name="coupon_name_and_information">Name: %1$s %2$s\n</string>
     <string name="coupon_pickup_location">Location: %1$s \n</string>
     <string name="coupon_pickup_date">Pickup Date: %1$s</string>
+    <string name="coupon_file_name">Qurban Coupon %1$s.pdf</string>
+
+    <!--Notification-->
+    <string name="notification_title_process_finished">Process Finished</string>
+    <string name="notification_body_import_data">Import data finished with %1$s data</string>
+    <string name="notification_body_save_coupon">Coupon saved at Documents Folder</string>
 </resources>

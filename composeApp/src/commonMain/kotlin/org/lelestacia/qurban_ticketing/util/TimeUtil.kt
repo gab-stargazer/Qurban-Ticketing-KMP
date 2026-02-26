@@ -21,7 +21,7 @@ fun Long.toFormattedDate(): String {
         zonedDateTime.format(
             DateTimeFormatter.ofPattern(
                 "dd MMMM yyyy",
-                Locale.forLanguageTag("id")
+                Locale.getDefault()
             )
         )
 

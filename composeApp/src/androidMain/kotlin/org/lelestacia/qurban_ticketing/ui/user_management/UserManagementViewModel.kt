@@ -13,16 +13,16 @@ import org.lelestacia.qurban_ticketing.domain.model.Status.Participant
 import org.lelestacia.qurban_ticketing.domain.model.Status.Recipient
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
-import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
 import org.lelestacia.qurban_ticketing.ui.filter.FilterType
+import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_date_cannot_be_empty
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_location_cannot_be_empty
 
 class UserManagementViewModel(
     private val userRepository: UserRepository,
-    private val utilRepository: UtilRepository,
-    private val importDataScheduler: BackgroundScheduler
+    private val importDataScheduler: BackgroundScheduler,
+    private val printCouponScheduler: BackgroundScheduler,
 ) : ViewModel() {
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
@@ -164,7 +164,6 @@ class UserManagementViewModel(
                 )
             }
 
-
             // UI Interaction
             is UserManagementEvent.OnFabMenuStateClicked -> _currentState.update { currentState ->
                 currentState.copy(
@@ -233,7 +232,17 @@ class UserManagementViewModel(
                     return
                 }
 
-                printCoupon()
+                printCouponScheduler.execute(
+                    state.value.dialogPrintCouponState.location,
+                    (state.value.dialogPrintCouponState.datePickerState.selectedDateMillis ?: return).toFormattedDate()
+                )
+
+                _currentState.update { currentState ->
+                    currentState.copy(
+                        dialogPrintCouponState = DialogPrintCouponState(),
+                        isDialogPrintCouponShowed = false
+                    )
+                }
             }
 
             DialogPrintCouponEvent.OnPrintCouponConfirmedWithoutPermission -> {
@@ -264,13 +273,6 @@ class UserManagementViewModel(
                 )
             }
         }
-    }
-
-    private fun printCoupon() = viewModelScope.launch {
-        utilRepository.saveCoupons(
-            qurbanLocation = state.value.dialogPrintCouponState.location,
-            qurbanPickupDate = "Test"
-        )
     }
 
     private fun validateDialogPrintCoupon(): DialogPrintCouponValidationResult {

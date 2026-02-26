@@ -12,8 +12,10 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.lelestacia.qurban_ticketing.data.ImportDataWorker
+import org.lelestacia.qurban_ticketing.data.PrintCouponWorker
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
 import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
+import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementViewModel
@@ -39,13 +41,19 @@ val androidModule = module {
         binds(listOf(BackgroundScheduler::class))
     }
 
+    factoryOf(::PrintCouponScheduler) {
+        named("Print Coupon Scheduler")
+        binds(listOf(BackgroundScheduler::class))
+    }
+
     workerOf(::ImportDataWorker)
+    workerOf(::PrintCouponWorker)
 
     viewModel {
         UserManagementViewModel(
             get(),
-            get(),
-            get(qualifier = named(name = "Import Data Scheduler"))
+            get(qualifier = named(name = "Import Data Scheduler")),
+            get(qualifier = named(name = "Print Coupon Scheduler")),
         )
     }
     viewModel {
