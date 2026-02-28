@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.user_management
+package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
-import org.lelestacia.qurban_ticketing.domain.model.Status.Participant
-import org.lelestacia.qurban_ticketing.domain.model.Status.Recipient
+import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
 import org.lelestacia.qurban_ticketing.ui.filter.FilterType
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
@@ -48,14 +48,14 @@ class UserManagementViewModel(
             FilterType.Participant -> {
                 userRepository.getUsersByStatus(
                     name = searchQuery,
-                    status = Participant
+                    status = Status.Participant
                 )
             }
 
             FilterType.Recipient -> {
                 userRepository.getUsersByStatus(
                     name = searchQuery,
-                    status = Recipient
+                    status = Status.Recipient
                 )
             }
         }
@@ -100,59 +100,96 @@ class UserManagementViewModel(
     fun onEvent(event: UserManagementEvent) {
         when (event) {
 
-            //  Action after permission
-
-            is UserManagementEvent.OnImportData -> {
-                _currentState.update { currentState ->
-                    currentState.copy(
-                        shouldLaunchExcelLauncher = false
-                    )
-                }
-
-                importDataScheduler.execute(event.uri.toString())
-            }
-
-
-            //  UI Event
-            is UserManagementEvent.OnFilterTypeChanged -> _filterType.update {
-                event.newFilterType
-            }
-
-            //  Dialog Permission
-            UserManagementEvent.OnDialogPermissionDismissed -> _currentState.update { currentState ->
-                currentState.copy(
-                    isNotificationDialogForImportDataOpened = false,
-                    isNotificationDialogForPrintCouponOpened = false
-                )
-            }
-
-            UserManagementEvent.OnContinueWithoutPermission -> viewModelScope.launch {
-
-
-                if (state.value.isNotificationDialogForImportDataOpened) {
-                    _currentState.update { currentState ->
-                        currentState.copy(
-                            isNotificationDialogForImportDataOpened = false,
-                            isNotificationDialogForPrintCouponOpened = false,
-                            shouldLaunchExcelLauncher = true
-                        )
+            is ImportDataEvent -> {
+                when (event) {
+                    ImportDataEvent.OnClick -> {
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                isFabMenuExpanded = false,
+                                isNotificationDialogForImportDataOpened = true
+                            )
+                        }
                     }
-                } else if (state.value.isNotificationDialogForPrintCouponOpened) {
-                    _currentState.update { currentState ->
-                        currentState.copy(
-                            isNotificationDialogForImportDataOpened = false,
-                            isNotificationDialogForPrintCouponOpened = false
-                        )
+
+                    is ImportDataEvent.OnImportData -> {
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                shouldLaunchExcelLauncher = false
+                            )
+                        }
+
+                        importDataScheduler.execute(event.stringUri)
                     }
                 }
             }
 
-            UserManagementEvent.OnDialogPermissionGranted -> {
-                onEvent(UserManagementEvent.OnContinueWithoutPermission)
-            }
-            //  End Dialog Permission
+            is FilterEvent -> {
+                when (event) {
+                    is FilterEvent.OnClick -> {
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                isFilterMenuOpened = event.newState
+                            )
+                        }
+                    }
 
-            is UserManagementEvent.OnSearchQueryChanged -> _searchQuery.update {
+                    is FilterEvent.OnValueChanged -> {
+                        _filterType.update { _ ->
+                            event.newFilterType
+                        }
+
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                isFilterMenuOpened = false
+                            )
+                        }
+                    }
+                }
+            }
+
+            is DialogPermissionEvent -> {
+                when (event) {
+                    DialogPermissionEvent.OnGrantPermission -> {
+                        onEvent(DialogPermissionEvent.OnContinueWithoutPermission)
+                    }
+
+                    DialogPermissionEvent.OnContinueWithoutPermission -> {
+                        viewModelScope.launch {
+                            val state = state.value
+                            if (state.isNotificationDialogForImportDataOpened) {
+                                _currentState.update { currentState ->
+                                    currentState.copy(
+                                        isNotificationDialogForImportDataOpened = false,
+                                        isNotificationDialogForPrintCouponOpened = false,
+                                        shouldLaunchExcelLauncher = true
+                                    )
+                                }
+                            } else if (state.isNotificationDialogForPrintCouponOpened) {
+                                _currentState.update { currentState ->
+                                    currentState.copy(
+                                        isDialogPrintCouponShowed = false,
+                                        isNotificationDialogForImportDataOpened = false,
+                                        isNotificationDialogForPrintCouponOpened = false
+                                    )
+                                }
+
+                                onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission)
+                            }
+                        }
+                    }
+
+                    DialogPermissionEvent.OnDismiss -> {
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                isNotificationDialogForImportDataOpened = false,
+                                isNotificationDialogForPrintCouponOpened = false
+                            )
+                        }
+                    }
+                }
+            }
+
+            is OnSearchQueryChanged -> _searchQuery.update {
                 event.newSearchQuery
             }
 
@@ -165,26 +202,14 @@ class UserManagementViewModel(
             }
 
             // UI Interaction
-            is UserManagementEvent.OnFabMenuStateClicked -> _currentState.update { currentState ->
+            is OnFabMenuStateClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     isFabMenuExpanded = event.newFabMenuState
                 )
             }
 
-            is UserManagementEvent.OnFilterMenuClicked -> _currentState.update { currentState ->
-                currentState.copy(
-                    isFilterMenuOpened = event.newFilterMenuState
-                )
-            }
 
-            UserManagementEvent.OnImportDataClicked -> _currentState.update { currentState ->
-                currentState.copy(
-                    isFabMenuExpanded = false,
-                    isNotificationDialogForImportDataOpened = true
-                )
-            }
-
-            UserManagementEvent.OnPrintCouponClicked -> _currentState.update { currentState ->
+            OnPrintCouponClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     isFabMenuExpanded = false,
                     isDialogPrintCouponShowed = true
@@ -212,7 +237,7 @@ class UserManagementViewModel(
                 }
             }
 
-            UserManagementEvent.OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
+            OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
                 currentState.copy(
                     isDialogPrintCouponShowed = false
                 )
@@ -267,7 +292,7 @@ class UserManagementViewModel(
             }
             //  End Dialog Print Coupon
 
-            is UserManagementEvent.OnUserClicked -> _currentState.update { currentState ->
+            is OnUserClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     selectedUserIndex = event.index
                 )

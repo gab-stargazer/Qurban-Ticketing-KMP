@@ -9,8 +9,9 @@ import org.koin.core.module.dsl.binds
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.lelestacia.qurban_ticketing.Constant.IMPORT_DATA_SCHEDULER
+import org.lelestacia.qurban_ticketing.Constant.PRINT_COUPON_SCHEDULER
 import org.lelestacia.qurban_ticketing.data.ImportDataWorker
 import org.lelestacia.qurban_ticketing.data.PrintCouponWorker
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
@@ -18,7 +19,6 @@ import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
-import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.Dashboard
 
@@ -37,25 +37,19 @@ val androidModule = module {
     }
 
     factoryOf(::ImportDataScheduler) {
-        named("Import Data Scheduler")
+        named(IMPORT_DATA_SCHEDULER)
         binds(listOf(BackgroundScheduler::class))
     }
 
     factoryOf(::PrintCouponScheduler) {
-        named("Print Coupon Scheduler")
+        named(PRINT_COUPON_SCHEDULER)
         binds(listOf(BackgroundScheduler::class))
     }
 
     workerOf(::ImportDataWorker)
     workerOf(::PrintCouponWorker)
 
-    viewModel {
-        UserManagementViewModel(
-            get(),
-            get(qualifier = named(name = "Import Data Scheduler")),
-            get(qualifier = named(name = "Print Coupon Scheduler")),
-        )
-    }
+
     viewModel {
         UserAddEditViewmodel(
             get(),

@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.user_management
+package org.lelestacia.qurban_ticketing.ui.user.management
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -21,17 +21,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import org.jetbrains.compose.resources.stringResource
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponState
+import org.lelestacia.qurban_ticketing.getPlatform
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
 import org.lelestacia.qurban_ticketing.util.FutureSelectableDate
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.*
 
+
 @OptIn(
     ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun DialogPrintCoupon(
@@ -43,8 +46,8 @@ fun DialogPrintCoupon(
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            dismissOnClickOutside = false,
-            usePlatformDefaultWidth = false
+            dismissOnClickOutside = !getPlatform().name.contains("Android"),
+            usePlatformDefaultWidth = !getPlatform().name.contains("Android")
         )
     ) {
 

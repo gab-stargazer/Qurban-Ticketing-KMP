@@ -1,6 +1,5 @@
-package org.lelestacia.qurban_ticketing.ui.user_management
+package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
 
-import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
 import arrow.optics.optics
@@ -42,18 +41,6 @@ sealed interface UserManagementEvent {
         val newSearchQuery: String,
     ) : UserManagementEvent
 
-    data class OnFilterTypeChanged(
-        val newFilterType: FilterType
-    ) : UserManagementEvent
-
-    data class OnFilterMenuClicked(
-        val newFilterMenuState: Boolean
-    ) : UserManagementEvent
-
-    //  UI Click Event
-    data object OnImportDataClicked
-        : UserManagementEvent
-
     data class OnUserClicked(
         val index: Int?,
     ) : UserManagementEvent
@@ -68,15 +55,29 @@ sealed interface UserManagementEvent {
     data object OnPrintCouponClicked : UserManagementEvent
     data object OnPrintCouponDialogDismissed : UserManagementEvent
 
+
     /**
-     *Permission Dialog*/
-    data object OnContinueWithoutPermission : UserManagementEvent
-    data object OnDialogPermissionDismissed : UserManagementEvent
+     *  Import Data
+     */
+    sealed interface ImportDataEvent : UserManagementEvent {
+        data object OnClick : ImportDataEvent
+        data class OnImportData(val stringUri: String) : ImportDataEvent
+    }
 
-    data object OnDialogPermissionGranted : UserManagementEvent
+    /**
+     *  Filter Event
+     */
+    sealed interface FilterEvent : UserManagementEvent {
+        data class OnClick(val newState: Boolean) : FilterEvent
+        data class OnValueChanged(val newFilterType: FilterType) : FilterEvent
+    }
 
-
-    data class OnImportData(
-        val uri: Uri
-    ) : UserManagementEvent
+    /**
+     *  Notification Permission Dialog
+     */
+    sealed interface DialogPermissionEvent : UserManagementEvent {
+        data object OnGrantPermission : DialogPermissionEvent
+        data object OnContinueWithoutPermission : DialogPermissionEvent
+        data object OnDismiss : DialogPermissionEvent
+    }
 }

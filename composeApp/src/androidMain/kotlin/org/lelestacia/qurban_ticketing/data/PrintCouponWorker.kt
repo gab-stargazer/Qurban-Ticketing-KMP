@@ -17,6 +17,7 @@ import org.lelestacia.qurban_ticketing.R
 import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.notification_body_save_coupon
+import qurbanticketing.composeapp.generated.resources.notification_title_process_failed
 import qurbanticketing.composeapp.generated.resources.notification_title_process_finished
 import kotlin.random.Random
 
@@ -28,24 +29,54 @@ class PrintCouponWorker(
     private val repository by inject<UtilRepository>(clazz = UtilRepository::class.java)
 
     override suspend fun doWork(): Result {
-         repository.saveCoupons(
-            qurbanLocation = inputData.getString(LOCATION) ?: return Result.failure(),
-            qurbanPickupDate = inputData.getString(PICKUP_DATE) ?: return Result.failure()
-        )
+        try {
+            repository.saveCoupons(
+                qurbanLocation = inputData.getString(LOCATION) ?: return Result.failure(),
+                qurbanPickupDate = inputData.getString(PICKUP_DATE) ?: return Result.failure()
+            )
 
-        val channel = NotificationChannel(
-            "default_channel",
-            "General Notifications",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "App general notifications"
+            val channel = NotificationChannel(
+                "default_channel",
+                "General Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "App general notifications"
+            }
+
+            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+            postNotification()
+
+            return Result.success()
+        } catch (e: Exception) {
+            val notificationBuilder = NotificationCompat.Builder(applicationContext, "default_channel")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(
+                    getString(
+                        resource = Res.string.notification_title_process_failed
+                    )
+                )
+                .setContentText(e.message ?: e.stackTraceToString())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+
+            with(NotificationManagerCompat.from(applicationContext)) {
+                if (Build.VERSION.SDK_INT >= 32) {
+                    if (
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        notify(Random.nextInt(), notificationBuilder.build())
+                    }
+                } else {
+                    notify(Random.nextInt(), notificationBuilder.build())
+                }
+            }
+
+            return Result.failure()
         }
-
-        val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(channel)
-        postNotification()
-
-        return Result.success()
     }
 
     private suspend fun postNotification() {

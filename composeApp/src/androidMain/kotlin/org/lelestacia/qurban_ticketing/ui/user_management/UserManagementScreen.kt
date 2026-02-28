@@ -2,8 +2,6 @@ package org.lelestacia.qurban_ticketing.ui.user_management
 
 import android.Manifest
 import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,13 +32,20 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementState
 import org.lelestacia.qurban_ticketing.theme.lightScheme
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
 import org.lelestacia.qurban_ticketing.ui.component.NotificationPermissionDialog
 import org.lelestacia.qurban_ticketing.ui.filter.FilterType
 import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
-import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementEvent.*
+import org.lelestacia.qurban_ticketing.ui.user.management.DialogPrintCoupon
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import org.lelestacia.qurban_ticketing.util.isNotGranted
@@ -68,16 +73,14 @@ fun UserManagementScreen(
 
     val lifecycle by lifecycleOwner.lifecycle.currentStateAsState()
     val users = state.users.collectAsLazyPagingItems()
-    val excelSelectionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) {
-        it?.let { uri ->
-            onEvent(OnImportData(uri))
-        }
+    val excelSelectionLauncher = rememberFilePickerLauncher(
+        type = FileKitType.File("xlsx")
+    ) { file ->
+        onEvent(ImportDataEvent.OnImportData(stringUri = file?.path ?: return@rememberFilePickerLauncher))
     }
 
     LaunchedEffect(state.shouldLaunchExcelLauncher) {
-        if (state.shouldLaunchExcelLauncher) excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+        if (state.shouldLaunchExcelLauncher) excelSelectionLauncher.launch()
     }
 
     //  Permission
@@ -85,7 +88,7 @@ fun UserManagementScreen(
         rememberPermissionState(
             permission = Manifest.permission.POST_NOTIFICATIONS,
             onPermissionResult = { _ ->
-                onEvent(OnDialogPermissionGranted)
+                onEvent(DialogPermissionEvent.OnGrantPermission)
             }
         )
 
@@ -98,15 +101,14 @@ fun UserManagementScreen(
     if (state.isNotificationDialogForImportDataOpened || state.isNotificationDialogForPrintCouponOpened) {
         NotificationPermissionDialog(
             onDismiss = {
-                onEvent(OnDialogPermissionDismissed)
+                onEvent(DialogPermissionEvent.OnDismiss)
             },
             onConfirmation = {
-                onEvent(OnDialogPermissionDismissed)
+                onEvent(DialogPermissionEvent.OnDismiss)
                 notificationPermission.launchPermissionRequest()
             },
             onDeny = {
-                onEvent(OnDialogPermissionDismissed)
-                excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                onEvent(DialogPermissionEvent.OnContinueWithoutPermission)
             }
         )
     }
@@ -172,11 +174,11 @@ fun UserManagementScreen(
                         lifecycle.handleWhenLifecycleResumed {
                             //  Check for notification only
                             if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
-                                excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                excelSelectionLauncher.launch()
                             } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
-                                onEvent(OnImportDataClicked)
+                                onEvent(ImportDataEvent.OnClick)
                             } else {
-                                excelSelectionLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                excelSelectionLauncher.launch()
                             }
                         }
                     },
@@ -270,7 +272,7 @@ fun UserManagementScreen(
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            onEvent(OnFilterMenuClicked(true))
+                            onEvent(FilterEvent.OnClick(newState = true))
                         }
                     ) {
                         Icon(
@@ -282,7 +284,7 @@ fun UserManagementScreen(
                     DropdownMenu(
                         expanded = state.isFilterMenuOpened,
                         onDismissRequest = {
-                            onEvent(OnFilterMenuClicked(false))
+                            onEvent(FilterEvent.OnClick(newState = false))
                         }
                     ) {
                         FilterType.entries.forEach { filterType ->
@@ -296,8 +298,7 @@ fun UserManagementScreen(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(OnFilterTypeChanged(filterType))
-                                    onEvent(OnFilterMenuClicked(false))
+                                    onEvent(FilterEvent.OnValueChanged(newFilterType = filterType))
                                 }
                             )
                         }
@@ -376,7 +377,10 @@ fun UserManagementScreen(
                                                     onInteraction = { interaction ->
                                                         when (interaction) {
                                                             UserItemInteraction.OnClick -> {
-                                                                onEvent(OnUserClicked(index))
+                                                                when (isSelected) {
+                                                                    true -> onEvent(OnUserClicked(null))
+                                                                    false -> onEvent(OnUserClicked(index))
+                                                                }
                                                                 keyboardManager?.hide()
                                                                 focusManager.clearFocus()
                                                             }

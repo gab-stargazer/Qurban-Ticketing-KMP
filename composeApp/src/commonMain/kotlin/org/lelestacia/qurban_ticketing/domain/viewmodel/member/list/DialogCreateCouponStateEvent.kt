@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.user_management
+package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
 
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePickerState

@@ -43,6 +43,7 @@ kotlin {
             //  Workmanager
             implementation(libs.workmanager)
         }
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -59,6 +60,10 @@ kotlin {
             implementation(libs.arrow.core)
             implementation(libs.arrow.fx.coroutines)
             implementation(libs.arrow.optics)
+
+            //  Filekit
+            implementation(libs.filekit.dialogs)
+            implementation(libs.filekit.dialogs.compose)
 
             //  Koog
             implementation(libs.koog.agents)

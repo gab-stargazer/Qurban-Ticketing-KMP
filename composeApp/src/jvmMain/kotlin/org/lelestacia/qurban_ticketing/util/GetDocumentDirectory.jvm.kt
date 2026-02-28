@@ -1,6 +1,10 @@
 package org.lelestacia.qurban_ticketing.util
 
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.FileKitUserDirectory
+import io.github.vinceglb.filekit.path
+import io.github.vinceglb.filekit.userDirectory
+
 actual fun getDocumentDirectory(): String {
-    val userHome = System.getProperty("user.home")
-    return "$userHome/Documents/"
+    return FileKit.userDirectory(FileKitUserDirectory.Documents).path
 }
