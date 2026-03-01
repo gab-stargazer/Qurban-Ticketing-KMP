@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -33,6 +34,7 @@ import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserList
+import java.util.*
 
 @OptIn(KoinExperimentalAPI::class)
 fun main() = application {
@@ -49,6 +51,10 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "Qurban Ticketing",
     ) {
+        LaunchedEffect(Unit) {
+            Locale.setDefault(Locale.forLanguageTag("id"))
+        }
+
         QurbanTicketingTheme {
             CompositionLocalProvider(
                 LocalScreenPadding provides CustomPadding(
