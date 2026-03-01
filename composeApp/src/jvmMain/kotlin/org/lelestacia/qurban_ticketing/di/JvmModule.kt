@@ -34,7 +34,7 @@ import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundSch
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.add.MemberAddEditEvent
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.add.MemberAddEditViewModel
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
-import org.lelestacia.qurban_ticketing.ui.UserManagementScreen
+import org.lelestacia.qurban_ticketing.ui.user.management.UserManagementScreen
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.ADD
