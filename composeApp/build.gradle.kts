@@ -65,10 +65,6 @@ kotlin {
             implementation(libs.filekit.dialogs)
             implementation(libs.filekit.dialogs.compose)
 
-            //  Koog
-            implementation(libs.koog.agents)
-            implementation(libs.koog.agents.tools)
-
             //  Koin
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
@@ -106,6 +102,12 @@ kotlin {
 
             //   Itext
             implementation(libs.itext)
+
+            implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
+
+
+            //  Kotzilla
+//            implementation(libs.kotzilla.sdk.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -113,6 +115,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
         }
     }
 }
@@ -138,7 +141,11 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -150,12 +157,7 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     add("kspCommonMainMetadata", libs.arrow.optics.compiler)
-    add("kspAndroid", libs.androidx.room.compiler)
-    add("kspAndroid", libs.arrow.optics.compiler)
-//    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-//    add("kspIosX64", libs.androidx.room.compiler)
-    add("kspJvm", libs.androidx.room.compiler)
-    add("kspJvm", libs.arrow.optics.compiler)
+    add("kspCommonMainMetadata", libs.androidx.room.compiler)
 }
 
 room {
@@ -164,10 +166,6 @@ room {
 
 //kotzilla {
 //    versionName = "1.0.0" // Your app version
-//}
-
-//tasks.named("kspKotlinJvm") {
-//    dependsOn("generateKotzillaConfig")
 //}
 
 compose.desktop {

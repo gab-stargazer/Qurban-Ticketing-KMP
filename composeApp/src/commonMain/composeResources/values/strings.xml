@@ -74,7 +74,7 @@
     <string name="coupon_name_and_information">Nama: %1$s %2$s\n</string>
     <string name="coupon_pickup_location">Lokasi: %1$s \n</string>
     <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s</string>
-    <string name="coupon_file_name">Kupon Qurban %1$s.pdf</string>
+    <string name="coupon_file_name">Kupon Qurban %1$s</string>
 
     <!--Notification-->
     <string name="notification_title_process_finished">Proses Selesai</string>

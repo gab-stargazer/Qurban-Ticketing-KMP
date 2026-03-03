@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import co.touchlab.kermit.Logger
 import org.jetbrains.compose.resources.getString
 import org.koin.java.KoinJavaComponent.inject
 import org.lelestacia.qurban_ticketing.R
@@ -49,6 +50,16 @@ class PrintCouponWorker(
 
             return Result.success()
         } catch (e: Exception) {
+            val channel = NotificationChannel(
+                "default_channel",
+                "General Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "App general notifications"
+            }
+            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+
             val notificationBuilder = NotificationCompat.Builder(applicationContext, "default_channel")
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(
@@ -75,6 +86,8 @@ class PrintCouponWorker(
                 }
             }
 
+            Logger.e(e.message.orEmpty())
+            e.printStackTrace()
             return Result.failure()
         }
     }

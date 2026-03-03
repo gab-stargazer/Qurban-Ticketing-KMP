@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import co.touchlab.kermit.Logger
 import org.jetbrains.compose.resources.getString
 import org.koin.java.KoinJavaComponent.inject
 import org.lelestacia.qurban_ticketing.R
@@ -28,24 +29,30 @@ class ImportDataWorker(
     private val repository by inject<UtilRepository>(clazz = UtilRepository::class.java)
 
     override suspend fun doWork(): Result {
-        val input: String = inputData.getString(INPUT_DATA_URL)
-            ?: return Result.failure()
-        val userCount = repository.importUsersFromExcel(uri = input)
+        return try {
+            val input: String = inputData.getString(INPUT_DATA_URL)
+                ?: return Result.failure()
+            val userCount = repository.importUsersFromExcel(uri = input)
 
-        val channel = NotificationChannel(
-            "default_channel",
-            "General Notifications",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "App general notifications"
+            val channel = NotificationChannel(
+                "default_channel",
+                "General Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "App general notifications"
+            }
+
+
+            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+            postNotification(userCount)
+
+            Result.success()
+        } catch (e: Exception) {
+            Logger.e(e.message.orEmpty())
+            e.printStackTrace()
+            Result.failure()
         }
-
-
-        val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(channel)
-        postNotification(userCount)
-
-        return Result.success()
     }
 
     private suspend fun postNotification(userCount: Int) {

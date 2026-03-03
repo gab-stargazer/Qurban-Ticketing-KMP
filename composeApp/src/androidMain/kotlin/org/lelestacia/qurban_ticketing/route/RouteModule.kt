@@ -10,11 +10,13 @@ import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.ui.MainMenu
+import org.lelestacia.qurban_ticketing.ui.information.InformationScreen
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditScreen
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementScreen
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.Dashboard
+import org.lelestacia.qurban_ticketing.util.route.Information
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserList
 
@@ -56,6 +58,13 @@ val routeModule = module {
             state = state,
             onEvent = viewmodel::onEvent,
             onBackPressed = navigator::goBack
+        )
+    }
+
+    navigation<Information> {
+        val navigator = koinInject<Navigator>()
+        InformationScreen(
+            goBack = navigator::goBack
         )
     }
 }

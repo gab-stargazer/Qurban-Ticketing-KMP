@@ -21,6 +21,7 @@ class PrintCouponScheduler(
                 qurbanLocation = input.first() as String,
                 qurbanPickupDate = input.last() as String
             )
+
             snackbarHostState.showSnackbar(getString(Res.string.notification_body_save_coupon))
         }
     }

@@ -22,12 +22,15 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.binds
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.named
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 import org.lelestacia.qurban_ticketing.Constant.IMPORT_DATA_SCHEDULER
 import org.lelestacia.qurban_ticketing.Constant.PRINT_COUPON_SCHEDULER
+import org.lelestacia.qurban_ticketing.data.PlatformUtilityImpl
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
+import org.lelestacia.qurban_ticketing.data.utility.PlatformUtility
 import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
@@ -59,6 +62,10 @@ val jvmModule = module {
         Room.databaseBuilder<QurbanDB>(
             name = dbFile.absolutePath
         )
+    }
+
+    singleOf(::PlatformUtilityImpl) {
+        binds(listOf(PlatformUtility::class))
     }
 
     single {

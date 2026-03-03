@@ -2,9 +2,9 @@ package org.lelestacia.qurban_ticketing.data.utility
 
 import dev.zwander.kotlin.file.FileUtils
 import dev.zwander.kotlin.file.IPlatformFile
-import io.ktor.utils.io.streams.*
 import io.retable.Retable
 import kotlinx.io.IOException
+import kotlinx.io.asInputStream
 import org.lelestacia.qurban_ticketing.data.entity.UserEntity
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
@@ -65,7 +65,7 @@ class ExcelUtility {
         file?.openInputStream().use { fis ->
             val table = Retable
                 .excel()
-                .read(fis?.inputStream() ?: return emptyList())
+                .read(fis?.asInputStream() ?: return emptyList())
 
             table.columns.apply {
                 entities.addAll(
@@ -97,7 +97,6 @@ class ExcelUtility {
     }
 
     companion object {
-        private const val ID = "id"
         private const val NAME = "Nama"
         private const val ADDRESS = "Alamat"
         private const val TYPE = "Jenis"

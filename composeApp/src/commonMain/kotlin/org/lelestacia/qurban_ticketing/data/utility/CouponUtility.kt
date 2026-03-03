@@ -10,23 +10,21 @@ import com.itextpdf.kernel.pdf.xobject.PdfImageXObject
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.*
 import com.itextpdf.layout.properties.*
-import dev.zwander.kotlin.file.FileUtils
-import dev.zwander.kotlin.file.IPlatformFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.io.asOutputStream
 import org.jetbrains.compose.resources.getDrawableResourceBytes
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
-import org.lelestacia.qurban_ticketing.util.getDocumentDirectory
 import qurbanticketing.composeapp.generated.resources.*
 import kotlin.time.Clock
 
-class CouponUtility {
+class CouponUtility(
+    private val platformUtility: PlatformUtility
+) {
 
     suspend fun saveCoupons(
         userData: List<CouponData>,
@@ -37,20 +35,15 @@ class CouponUtility {
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .year
 
-        val fileName: String = getString(
+        val documentName: String = getString(
             resource = Res.string.coupon_file_name,
             currentYear.toString()
         )
 
-        val file: IPlatformFile? = FileUtils.fromString(
-            input = "${getDocumentDirectory()}/$fileName",
-            isDirectory = false
-        )
-
-
-        file?.openOutputStream()?.let { fos ->
+        val os = platformUtility.createQurbanTicketAndGetOS(documentName)
+        os?.let { os ->
             withContext(Dispatchers.IO) {
-                val writer = PdfWriter(fos.asOutputStream())
+                val writer = PdfWriter(os)
                 val pdf = PdfDocument(writer)
                 val document = Document(pdf, PageSize.A4)
                 document.setMargins(0F, 0F, 0F, 0F)
@@ -138,6 +131,8 @@ class CouponUtility {
                 pdf.close()
                 writer.close()
             }
+
+            os.close()
         }
     }
 

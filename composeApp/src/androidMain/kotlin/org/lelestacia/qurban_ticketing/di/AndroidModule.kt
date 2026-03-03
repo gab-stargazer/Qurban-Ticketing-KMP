@@ -5,16 +5,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.workerOf
-import org.koin.core.module.dsl.binds
-import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.named
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.*
 import org.koin.dsl.module
 import org.lelestacia.qurban_ticketing.Constant.IMPORT_DATA_SCHEDULER
 import org.lelestacia.qurban_ticketing.Constant.PRINT_COUPON_SCHEDULER
 import org.lelestacia.qurban_ticketing.data.ImportDataWorker
+import org.lelestacia.qurban_ticketing.data.PlatformUtilityImpl
 import org.lelestacia.qurban_ticketing.data.PrintCouponWorker
 import org.lelestacia.qurban_ticketing.data.db.QurbanDB
+import org.lelestacia.qurban_ticketing.data.utility.PlatformUtility
 import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
@@ -34,6 +33,10 @@ val androidModule = module {
             context = appContext,
             name = dbFile.absolutePath
         )
+    }
+
+    singleOf(::PlatformUtilityImpl) {
+        binds(listOf(PlatformUtility::class))
     }
 
     factoryOf(::ImportDataScheduler) {

@@ -10,6 +10,9 @@ data object UserList
 data object Dashboard
 
 @Serializable
+data object Information
+
+@Serializable
 data class UserAddEdit(
     val screenType: ScreenType = ScreenType.ADD,
     val initialData: User? = null,
@@ -20,6 +23,3 @@ data class UserAddEdit(
         ADD, EDIT
     }
 }
-
-@Serializable
-data object MemberAdd

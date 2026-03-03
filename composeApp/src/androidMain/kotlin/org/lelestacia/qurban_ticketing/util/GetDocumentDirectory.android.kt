@@ -11,9 +11,14 @@ actual fun getDocumentDirectory(): String {
                 .toString()
 
         else -> {
-            Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .toString()
+            val documentsDir = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+
+            if (!documentsDir.exists()) {
+                documentsDir.mkdirs()
+            }
+
+            documentsDir.toString()
         }
     }
 }

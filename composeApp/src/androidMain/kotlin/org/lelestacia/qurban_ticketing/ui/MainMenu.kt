@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.currentStateAsState
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
+import org.lelestacia.qurban_ticketing.util.route.Information
 import org.lelestacia.qurban_ticketing.util.route.UserList
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_show_app_information
@@ -92,7 +93,7 @@ fun MainMenu(
                         onClick = {
                             lifecycle.handleWhenLifecycleResumed(
                                 onResumed = {
-//                                    navigator.navigateTo(Information)
+                                    navigateTo(Information)
                                 }
                             )
                         },

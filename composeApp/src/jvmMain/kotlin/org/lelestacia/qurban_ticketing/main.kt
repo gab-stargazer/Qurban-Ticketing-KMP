@@ -22,6 +22,7 @@ import androidx.compose.ui.window.application
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -34,6 +35,8 @@ import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserList
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.logo_equrban_desktop
 import java.util.*
 
 @OptIn(KoinExperimentalAPI::class)
@@ -41,13 +44,19 @@ fun main() = application {
 
     startKoin {
         modules(dataModule, domainModule, jvmModule)
+
+//        monitoring()
     }
 
     val navigator = koinInject<Navigator>()
     val snackbarHostState = koinInject<SnackbarHostState>()
     val entryProvider = koinEntryProvider<Any>()
 
+
+
+
     Window(
+        icon = painterResource(Res.drawable.logo_equrban_desktop),
         onCloseRequest = ::exitApplication,
         title = "Qurban Ticketing",
     ) {
