@@ -19,7 +19,7 @@ abstract class QurbanDB : RoomDatabase() {
     abstract fun memberDao(): UserDao
 }
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@Suppress("KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<QurbanDB> {
     override fun initialize(): QurbanDB
 }
