@@ -103,15 +103,14 @@ kotlin {
             //   Itext
             implementation(libs.itext)
 
-            implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
-
-
             //  Kotzilla
 //            implementation(libs.kotzilla.sdk.compose)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
@@ -131,6 +130,7 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -139,6 +139,7 @@ android {
             excludes += "META-INF/DEPENDENCIES"
         }
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -148,6 +149,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -157,7 +159,8 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     add("kspCommonMainMetadata", libs.arrow.optics.compiler)
-    add("kspCommonMainMetadata", libs.androidx.room.compiler)
+    add("kspJvm", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
 }
 
 room {
