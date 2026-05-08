@@ -127,7 +127,7 @@ android {
         applicationId = "org.lelestacia.qurban_ticketing"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
+        versionCode = 3
         versionName = "1.1"
     }
 
