@@ -4,22 +4,22 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import org.lelestacia.qurban_ticketing.data.dao.MemberDao
-import org.lelestacia.qurban_ticketing.data.entity.MemberEntity
+import org.lelestacia.qurban_ticketing.data.dao.UserDao
+import org.lelestacia.qurban_ticketing.data.entity.UserEntity
 
 @Database(
     entities = [
-        MemberEntity::class
+        UserEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = true,
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class QurbanDB : RoomDatabase() {
-    abstract fun memberDao(): MemberDao
+    abstract fun memberDao(): UserDao
 }
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@Suppress("KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<QurbanDB> {
     override fun initialize(): QurbanDB
 }

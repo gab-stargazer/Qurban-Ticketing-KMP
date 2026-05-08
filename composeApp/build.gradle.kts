@@ -14,6 +14,10 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
+    }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -26,7 +30,20 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+
+            //  Accompanist
+            implementation("com.google.accompanist:accompanist-permissions:0.37.3")
+
+            //  Koin
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.workmanager)
+
+            //  Workmanager
+            implementation(libs.workmanager)
         }
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -44,9 +61,9 @@ kotlin {
             implementation(libs.arrow.fx.coroutines)
             implementation(libs.arrow.optics)
 
-            //  Koog
-            implementation(libs.koog.agents)
-            implementation(libs.koog.agents.tools)
+            //  Filekit
+            implementation(libs.filekit.dialogs)
+            implementation(libs.filekit.dialogs.compose)
 
             //  Koin
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -76,13 +93,28 @@ kotlin {
 
             //  Kermit
             implementation("co.touchlab:kermit:2.0.8")
+
+            //  Retable
+            implementation(libs.retable)
+
+            //  KmpFile
+            implementation("dev.zwander:kmpfile:0.8.0")
+
+            //   Itext
+            implementation(libs.itext)
+
+            //  Kotzilla
+//            implementation(libs.kotzilla.sdk.compose)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
         }
     }
 }
@@ -95,19 +127,29 @@ android {
         applicationId = "org.lelestacia.qurban_ticketing"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
+
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -116,10 +158,9 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
-    add("kspAndroid", libs.androidx.room.compiler)
-//    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-//    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspCommonMainMetadata", libs.arrow.optics.compiler)
     add("kspJvm", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
 }
 
 room {
@@ -128,10 +169,6 @@ room {
 
 //kotzilla {
 //    versionName = "1.0.0" // Your app version
-//}
-
-//tasks.named("kspKotlinJvm") {
-//    dependsOn("generateKotzillaConfig")
 //}
 
 compose.desktop {
