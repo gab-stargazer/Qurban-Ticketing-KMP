@@ -1,46 +1,45 @@
-<div align="center">
+# Android Qurban Ticketing 
+Aplikasi untuk mengelola data dan mencetak kupon Qurban langsung dari Android.
+---
 
-<img src="https://github.com/gab-stargazer/Qurban-Ticketing-KMP/blob/dev-no-migration/composeApp/src/commonMain/composeResources/drawable/equrban_background.jpg" alt="EQurban app icon" width="200" />
+# Fitur Utama
+- Tambah dan edit data peserta / penerima Qurban
+- Cetak coupon langsung dari aplikasi
+---
 
-# Qurban Ticketing App
-
-[![Latest release](https://img.shields.io/badge/LATEST-0.0.0.0-blue)](https://google.com)
-
-</div>
+# Privasi & Keamanan
+- Aplikasi ini **tidak mengumpulkan data pengguna**
+- Semua data disimpan secara lokal di perangkat pengguna
+- Aplikasi tidak menggunakan server eksternal
+- Hasil pemindaian virus dapat dilihat di:
+  - [Kaspersky](https://opentip.kaspersky.com/D712EAC825C7C666B1ADB9F419CACF8EE8CB55C3938DA3AB57BEE0C87C27C7DE/results)
 
 ---
 
-<div align="center">
-
-<h1><a id="fitur"></a>Fitur</h1>
-
-<table>
-  <tr>
-    <td width="100%" valign="top">
-      
-- Cetak tiket instan
-- Daftar Peserta dan Penerima
-
-  <tr>
-    <td width="100%" valign="top">
-
-### Catatan
-
-Tiket yang sudah di-print disimpan di folder Dokumen/Documents
-
-</div>
-
+# Cara Install Aplikasi
+1. Download file APK dari halaman **Releases** atau klik [Download Aplikasi](https://github.com/gab-stargazer/Qurban-Ticketing-KMP/releases/download/1.0/Qurban.Ticketing.apk)
+2. Buka file APK
+3. Jika muncul peringatan:
+   - Pilih **Izinkan instalasi dari sumber ini**
+4. Lanjutkan proses instalasi sampai selesai
 ---
 
-<div align="center">
+# Cara Menggunakan Aplikasi
+> Nama Tombol dapat berbeda tergantung bahasa perangkat yang digunakan
+1. Buka Aplikasi
+2. Klik Menu “Management”
+3. Tambahkan Data Anda
+    1. Tekan tombol **Aksi** di kanan bawah
+    2. Pilih: **Tambahkan Peserta/Penerima** untuk menambah data baru
+4. Klik ikon pensil disebelah nama Peserta/Penerima untuk mengubah/menghapus data (Opsional)
+5. Cetak Coupon
+    1. Tekan tombol **Aksi** di kanan bawah
+    2. Pilih **Cetak Kupon**
+6. Berikan Izin Notifikasi bila diperlukan (Opsional)
+---
 
-<h1><a id="download"></a>Download</h1>
-
-<h2>Versi Terbaru</h2>
-
-<table>
-    </td>
-    <td align="center">
-      <a href="https://google.com">
-        <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Download from GitHub" height="75">
-      </a>
+# Cara mengakses Kupon yang dicetak
+1. Buka File Manager diperangkat anda
+2. Pilih Menu Penyimpanan Internal
+3. Klik pada folder Dokumen
+---
