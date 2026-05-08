@@ -1,42 +1,46 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
+<div align="center">
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-      folder is the appropriate location.
+<img src="https://github.com/gab-stargazer/Qurban-Ticketing-KMP/blob/dev-no-migration/composeApp/src/commonMain/composeResources/drawable/equrban_background.jpg" alt="EQurban app icon" width="200" />
 
-### Build and Run Android Application
+# Qurban Ticketing App
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
+[![Latest release](https://img.shields.io/badge/LATEST-0.0.0.0-blue)](https://google.com)
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+</div>
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+<div align="center">
+
+<h1><a id="fitur"></a>Fitur</h1>
+
+<table>
+  <tr>
+    <td width="100%" valign="top">
+      
+- Cetak tiket instan
+- Daftar Peserta dan Penerima
+
+  <tr>
+    <td width="100%" valign="top">
+
+### Catatan
+
+Tiket yang sudah di-print disimpan di folder Dokumen/Documents
+
+</div>
+
+---
+
+<div align="center">
+
+<h1><a id="download"></a>Download</h1>
+
+<h2>Versi Terbaru</h2>
+
+<table>
+    </td>
+    <td align="center">
+      <a href="https://google.com">
+        <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Download from GitHub" height="75">
+      </a>
