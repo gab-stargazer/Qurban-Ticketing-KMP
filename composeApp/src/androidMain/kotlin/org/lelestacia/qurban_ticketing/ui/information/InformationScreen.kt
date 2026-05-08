@@ -138,7 +138,7 @@ fun InformationScreen(
                         lifecycle.handleWhenLifecycleResumed {
                             val intent = Intent(
                                 Intent.ACTION_VIEW,
-                                "https://www.facebook.com/KamilGC/".toUri()
+                                "https://www.facebook.com/lelestacia/".toUri()
                             )
                             context.startActivity(intent)
                         }
@@ -179,7 +179,7 @@ fun InformationScreen(
                         lifecycle.handleWhenLifecycleResumed {
                             val intent = Intent(
                                 Intent.ACTION_VIEW,
-                                "https://github.com/gab-stargazer/Android-Qurban-Ticket-System".toUri()
+                                "https://github.com/gab-stargazer/Qurban-Ticketing-KMP".toUri()
                             )
                             context.startActivity(intent)
                         }
