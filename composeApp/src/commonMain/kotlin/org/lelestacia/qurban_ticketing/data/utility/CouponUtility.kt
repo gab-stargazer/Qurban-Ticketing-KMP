@@ -12,15 +12,14 @@ import com.itextpdf.layout.element.*
 import com.itextpdf.layout.properties.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.getDrawableResourceBytes
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
 import qurbanticketing.composeapp.generated.resources.*
-import kotlin.time.Clock
+import java.time.chrono.HijrahDate
+import java.time.temporal.ChronoField
 
 class CouponUtility(
     private val platformUtility: PlatformUtility
@@ -31,13 +30,12 @@ class CouponUtility(
         qurbanLocation: String,
         qurbanPickupDate: String
     ) {
-        val currentYear: Int = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .year
+        val currentYear: Int = HijrahDate.now().get(ChronoField.YEAR)
+        val currentYearFormatted = "$currentYear Hijriah"
 
         val documentName: String = getString(
             resource = Res.string.coupon_file_name,
-            currentYear.toString()
+            currentYearFormatted
         )
 
         val os = platformUtility.createQurbanTicketAndGetOS(documentName)
@@ -66,7 +64,7 @@ class CouponUtility(
                                 Paragraph()
                                     .add(
                                         Text(
-                                            getString(Res.string.coupon_title, currentYear)
+                                            getString(Res.string.coupon_title, currentYearFormatted)
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_BOLD))
                                             .setFontSize(12F)
