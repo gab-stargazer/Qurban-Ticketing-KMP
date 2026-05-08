@@ -43,3 +43,13 @@ Aplikasi untuk mengelola data dan mencetak kupon Qurban langsung dari Android.
 2. Pilih Menu Penyimpanan Internal
 3. Klik pada folder Dokumen
 ---
+
+# FAQ
+Q: Apakah app akan terus dikembangkan?\
+A: Kami akan berusaha untuk terus mengembangkan aplikasi sesuai dengan kekurangan yang muncul setelah perilisan
+
+Q: Apakah app akan masuk Playstore?\
+A: Ada rencana untuk melakukannya, namun belum untuk dalam jangka waktu yang dekat
+
+Q: Bagaimana jika pengguna memiliki keluhan ataupun masukan untuk fitur baru atau perbaikan?\
+A: Silahkan hubungi salah satu anggota kami, baik penulis, desainer ataupun developer
