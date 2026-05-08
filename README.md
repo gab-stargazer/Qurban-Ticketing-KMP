@@ -12,12 +12,12 @@ Aplikasi untuk mengelola data dan mencetak kupon Qurban langsung dari Android.
 - Semua data disimpan secara lokal di perangkat pengguna
 - Aplikasi tidak menggunakan server eksternal
 - Hasil pemindaian virus dapat dilihat di:
-  - [Kaspersky](https://opentip.kaspersky.com/D712EAC825C7C666B1ADB9F419CACF8EE8CB55C3938DA3AB57BEE0C87C27C7DE/results)
+  - [Kaspersky](https://opentip.kaspersky.com/AFAB75749AA86913A1D18C0A87E52E014259573403A326672517FCC2370B0D71/results)
 
 ---
 
 # Cara Install Aplikasi
-1. Download file APK dari halaman **Releases** atau klik [Download Aplikasi](https://github.com/gab-stargazer/Qurban-Ticketing-KMP/releases/download/1.0/Qurban.Ticketing.apk)
+1. Download file APK dari halaman **Releases** atau klik [Download Aplikasi](https://github.com/gab-stargazer/Qurban-Ticketing-KMP/releases/download/1.1/Qurban.Ticketing.apk)
 2. Buka file APK
 3. Jika muncul peringatan:
    - Pilih **Izinkan instalasi dari sumber ini**
@@ -43,3 +43,13 @@ Aplikasi untuk mengelola data dan mencetak kupon Qurban langsung dari Android.
 2. Pilih Menu Penyimpanan Internal
 3. Klik pada folder Dokumen
 ---
+
+# FAQ
+Q: Apakah app akan terus dikembangkan?\
+A: Kami akan berusaha untuk terus mengembangkan aplikasi sesuai dengan kekurangan yang muncul setelah perilisan
+
+Q: Apakah app akan masuk Playstore?\
+A: Ada rencana untuk melakukannya, namun belum untuk dalam jangka waktu yang dekat
+
+Q: Bagaimana jika pengguna memiliki keluhan ataupun masukan untuk fitur baru atau perbaikan?\
+A: Silahkan hubungi salah satu anggota kami, baik penulis, desainer ataupun developer
