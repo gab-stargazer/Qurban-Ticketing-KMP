@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import org.lelestacia.qurban_ticketing.domain.model.Status
+import org.lelestacia.qurban_ticketing.domain.model.Type
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.model.isParticipant
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
@@ -26,7 +28,9 @@ class UserAddEditViewmodel(
         UserAddEditState(
             screenType = screenType,
             name = initialData?.name.orEmpty(),
-            address = initialData?.address.orEmpty()
+            address = initialData?.address.orEmpty(),
+            qurbanStatus = initialData?.status ?: Status.Recipient,
+            qurbanType = initialData?.type ?: Type.Cow,
         )
     )
     val state = _state.asStateFlow()

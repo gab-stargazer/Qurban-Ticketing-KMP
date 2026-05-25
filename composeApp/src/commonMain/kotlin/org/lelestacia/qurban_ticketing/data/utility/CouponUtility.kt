@@ -1,15 +1,17 @@
 package org.lelestacia.qurban_ticketing.data.utility
 
 import com.itextpdf.io.font.constants.StandardFonts
+import com.itextpdf.io.image.ImageData
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.kernel.font.PdfFontFactory
 import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
-import com.itextpdf.kernel.pdf.xobject.PdfImageXObject
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.*
-import com.itextpdf.layout.properties.*
+import com.itextpdf.layout.properties.AreaBreakType
+import com.itextpdf.layout.properties.HorizontalAlignment
+import com.itextpdf.layout.properties.VerticalAlignment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getDrawableResourceBytes
@@ -21,9 +23,21 @@ import qurbanticketing.composeapp.generated.resources.*
 import java.time.chrono.HijrahDate
 import java.time.temporal.ChronoField
 
+
 class CouponUtility(
     private val platformUtility: PlatformUtility
 ) {
+
+    private lateinit var backgroundImage: ImageData
+
+    private suspend fun loadBackgroundImage() {
+        backgroundImage = ImageDataFactory.create(
+            getDrawableResourceBytes(
+                getSystemResourceEnvironment(),
+                Res.drawable.background_coupon
+            )
+        )
+    }
 
     suspend fun saveCoupons(
         userData: List<CouponData>,
@@ -37,6 +51,8 @@ class CouponUtility(
             resource = Res.string.coupon_file_name,
             currentYearFormatted
         )
+
+        loadBackgroundImage()
 
         val os = platformUtility.createQurbanTicketAndGetOS(documentName)
         os?.let { os ->
@@ -55,9 +71,19 @@ class CouponUtility(
                     table.setPadding(0F)
                     chunk.forEach { currentData ->
                         val cell = Cell()
+                            .setMargin(0F)
                             .setHorizontalAlignment(HorizontalAlignment.LEFT)
                             .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                            .setPaddingLeft(36F)
+
+                        cell.setNextRenderer(
+                            CouponCellRenderer(
+                                cell,
+                                backgroundImage
+                            )
+                        )
+
+                        cell
+                            .setPaddingLeft(12F)
                             .setPaddingTop(12F)
                             .setPaddingBottom(12F)
                             .add(
@@ -95,26 +121,6 @@ class CouponUtility(
                                             .setFontSize(12F)
                                     )
                             )
-
-                        cell.setBackgroundImage(
-                            BackgroundImage.Builder()
-                                .setImage(
-                                    PdfImageXObject(
-                                        ImageDataFactory.create(
-                                            getDrawableResourceBytes(
-                                                environment = getSystemResourceEnvironment(),
-                                                resource = Res.drawable.background_coupon
-                                            )
-                                        )
-                                    )
-                                )
-                                .setBackgroundSize(
-                                    BackgroundSize().apply {
-                                        setBackgroundSizeToCover()
-                                    }
-                                )
-                                .build()
-                        )
 
                         table.addCell(cell)
                     }
