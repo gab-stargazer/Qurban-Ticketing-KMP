@@ -1,5 +1,6 @@
 package org.lelestacia.qurban_ticketing.ui.information
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -28,6 +29,7 @@ import qurbanticketing.composeapp.generated.resources.logo_equrban
 import qurbanticketing.composeapp.generated.resources.title_app_name
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun InformationScreen(
     goBack: () -> Unit,

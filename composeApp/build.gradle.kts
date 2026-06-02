@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -15,35 +15,29 @@ plugins {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xexplicit-backing-fields")
+        freeCompilerArgs.addAll(
+            "-Xexplicit-backing-fields",
+            "-Xskip-prerelease-check"
+        )
     }
 
-    androidTarget {
+    android {
+        namespace = "org.lelestacia.qurban_ticketing.library"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+
+        androidResources {
+            enable = true
         }
     }
 
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.activity.compose)
-
-            //  Accompanist
-            implementation("com.google.accompanist:accompanist-permissions:0.37.3")
-
-            //  Koin
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
-            implementation(libs.koin.workmanager)
-
-            //  Workmanager
-            implementation(libs.workmanager)
-        }
-
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -92,7 +86,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             //  Kermit
-            implementation("co.touchlab:kermit:2.0.8")
+            implementation(libs.kermit)
 
             //  Retable
             implementation(libs.retable)
@@ -119,45 +113,45 @@ kotlin {
     }
 }
 
-android {
-    namespace = "org.lelestacia.qurban_ticketing"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "org.lelestacia.qurban_ticketing"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "1.1"
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/io.netty.versions.properties"
-            excludes += "META-INF/INDEX.LIST"
-            excludes += "META-INF/DEPENDENCIES"
-        }
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+compose.resources {
+    publicResClass = true
 }
 
+//android {
+//    namespace = "org.lelestacia.qurban_ticketing"
+//    compileSdk = libs.versions.android.compileSdk.get().toInt()
+//
+//    defaultConfig {
+//        minSdk = libs.versions.android.minSdk.get().toInt()
+//    }
+//
+//    packaging {
+//        resources {
+//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+//            excludes += "META-INF/io.netty.versions.properties"
+//            excludes += "META-INF/INDEX.LIST"
+//            excludes += "META-INF/DEPENDENCIES"
+//        }
+//    }
+//
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+//
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_11
+//        targetCompatibility = JavaVersion.VERSION_11
+//    }
+//}
+
 dependencies {
-    debugImplementation(libs.compose.uiTooling)
+    androidRuntimeClasspath(libs.compose.uiTooling)
     add("kspCommonMainMetadata", libs.arrow.optics.compiler)
     add("kspJvm", libs.androidx.room.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
