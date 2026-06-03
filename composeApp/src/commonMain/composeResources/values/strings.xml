@@ -71,10 +71,12 @@
     <string name="error_name_cannot_be_empty">Nama tidak boleh kosong</string>
 
     <!--Coupon-->
-    <string name="coupon_title">Kupon Qurban %1$s\n</string>
-    <string name="coupon_name_and_information">Nama: %1$s %2$s\n</string>
+    <string name="coupon_title">Kupon Penerima Qurban %1$s\n</string>
+    <string name="coupon_title_participant">Kupon Peserta Qurban %1$s\n</string>
+    <string name="coupon_name_and_information">Nama: %1$s\n</string>
     <string name="coupon_pickup_location">Lokasi: %1$s \n</string>
-    <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s</string>
+    <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s\n</string>
+    <string name="coupon_pickup_time">Waktu Pengambilan: %1$s - %2$s</string>
     <string name="coupon_file_name">Kupon Qurban %1$s</string>
 
     <!--Notification-->

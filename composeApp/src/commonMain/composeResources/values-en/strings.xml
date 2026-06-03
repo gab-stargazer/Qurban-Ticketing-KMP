@@ -72,10 +72,12 @@
     <string name="error_name_cannot_be_empty">Name cannot be empty</string>
 
     <!--Coupon-->
-    <string name="coupon_title">Qurban Coupon %1$s\n</string>
-    <string name="coupon_name_and_information">Name: %1$s %2$s\n</string>
+    <string name="coupon_title">Qurban Recipient Coupon %1$s\n</string>
+    <string name="coupon_title_participant">Qurban Participant Coupon %1$s\n</string>
+    <string name="coupon_name_and_information">Name: %1$s\n</string>
     <string name="coupon_pickup_location">Location: %1$s \n</string>
-    <string name="coupon_pickup_date">Pickup Date: %1$s</string>
+    <string name="coupon_pickup_date">Pickup Date: %1$s\n</string>
+    <string name="coupon_pickup_time">Pickup Time: %1$s - %2$s</string>
     <string name="coupon_file_name">Qurban Coupon %1$s</string>
 
     <!--Notification-->

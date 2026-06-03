@@ -28,13 +28,21 @@ class CouponUtility(
     private val platformUtility: PlatformUtility
 ) {
 
-    private lateinit var backgroundImage: ImageData
+    private lateinit var couponParticipant: ImageData
+    private lateinit var couponRecipient: ImageData
 
     private suspend fun loadBackgroundImage() {
-        backgroundImage = ImageDataFactory.create(
+        couponParticipant = ImageDataFactory.create(
             getDrawableResourceBytes(
                 getSystemResourceEnvironment(),
-                Res.drawable.background_coupon
+                Res.drawable.coupon_participant
+            )
+        )
+
+        couponRecipient = ImageDataFactory.create(
+            getDrawableResourceBytes(
+                getSystemResourceEnvironment(),
+                Res.drawable.coupon_recipient
             )
         )
     }
@@ -78,47 +86,72 @@ class CouponUtility(
                         cell.setNextRenderer(
                             CouponCellRenderer(
                                 cell,
-                                backgroundImage
+                                when(currentData.status) {
+                                    Status.Recipient -> couponRecipient
+                                    Status.Participant -> couponParticipant
+                                }
                             )
                         )
 
                         cell
-                            .setPaddingLeft(12F)
+                            .setPaddingLeft(18F)
                             .setPaddingTop(12F)
                             .setPaddingBottom(12F)
                             .add(
                                 Paragraph()
                                     .add(
                                         Text(
-                                            getString(Res.string.coupon_title, currentYearFormatted)
+                                            getString(
+                                                when (currentData.status) {
+                                                    Status.Recipient -> Res.string.coupon_title
+                                                    Status.Participant -> Res.string.coupon_title_participant
+                                                },
+                                                currentYearFormatted
+                                            )
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_BOLD))
-                                            .setFontSize(12F)
+                                            .setFontSize(11F)
                                     )
                                     .add(
                                         Text(
                                             getString(
                                                 Res.string.coupon_name_and_information,
-                                                currentData.name,
-                                                when (currentData.status) {
-                                                    Status.Recipient -> ""
-                                                    Status.Participant ->
-                                                        "[${getString(currentData.type.uiText)}]"
-                                                }
+                                                currentData.name
                                             )
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
-                                            .setFontSize(12F)
+                                            .setFontSize(9F)
                                     )
                                     .add(
-                                        Text(getString(Res.string.coupon_pickup_location, qurbanLocation))
+                                        Text(
+                                            getString(
+                                                Res.string.coupon_pickup_location,
+                                                qurbanLocation
+                                            )
+                                        )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
-                                            .setFontSize(12F)
+                                            .setFontSize(9F)
                                     )
                                     .add(
-                                        Text(getString(Res.string.coupon_pickup_date, qurbanPickupDate))
+                                        Text(
+                                            getString(
+                                                Res.string.coupon_pickup_date,
+                                                qurbanPickupDate
+                                            )
+                                        )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
-                                            .setFontSize(12F)
+                                            .setFontSize(9F)
+                                    )
+                                    .add(
+                                        Text(
+                                            getString(
+                                                Res.string.coupon_pickup_time,
+                                                "14:00",
+                                                "16:00"
+                                            )
+                                        )
+                                            .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
+                                            .setFontSize(9F)
                                     )
                             )
 
