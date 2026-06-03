@@ -64,7 +64,7 @@ class UserAddEditViewmodel(
             }
 
 
-            UserAddEditEvent.OnBackPressed -> navigator.goBack()
+            UserAddEditEvent.OnBackPressed -> navigator.onBackPressed()
 
             UserAddEditEvent.OnAddEditPressed -> insertOrEditParticipant()
 
@@ -77,7 +77,7 @@ class UserAddEditViewmodel(
                     }
 
                     repository.deleteMember(member)
-                    navigator.goBack()
+                    navigator.onBackPressed()
                 }
             }
         }
@@ -140,6 +140,6 @@ class UserAddEditViewmodel(
             }
         }
 
-        navigator.goBack()
+        navigator.onBackPressed()
     }
 }

@@ -58,9 +58,7 @@ kotlin {
         implementation(projects.composeApp)
         implementation(libs.androidx.activity.compose)
         implementation(libs.compose.uiToolingPreview)
-
-        implementation(libs.compose.uiToolingPreview)
-        implementation(libs.androidx.activity.compose)
+        debugImplementation(libs.compose.uiTooling)
 
         //  Accompanist
         implementation("com.google.accompanist:accompanist-permissions:0.37.3")
@@ -79,7 +77,6 @@ kotlin {
         implementation(libs.compose.material3)
         implementation(libs.compose.ui)
         implementation(libs.compose.components.resources)
-        implementation(libs.compose.uiToolingPreview)
         implementation(libs.androidx.lifecycle.viewmodelCompose)
         implementation(libs.androidx.lifecycle.runtimeCompose)
         implementation(libs.material.icons.extended)
@@ -95,7 +92,6 @@ kotlin {
         implementation(libs.filekit.dialogs.compose)
 
         //  Koin
-        implementation(project.dependencies.platform(libs.koin.bom))
         implementation(libs.koin.core)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)

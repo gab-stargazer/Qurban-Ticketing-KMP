@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -21,8 +22,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
+import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_back
 import qurbanticketing.composeapp.generated.resources.logo_equrban
@@ -32,7 +35,7 @@ import qurbanticketing.composeapp.generated.resources.title_app_name
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun InformationScreen(
-    goBack: () -> Unit,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -82,7 +85,7 @@ fun InformationScreen(
             ) {
                 IconButton(
                     onClick = {
-                        lifecycle.handleWhenLifecycleResumed(onResumed = goBack)
+                        lifecycle.handleWhenLifecycleResumed(onResumed = onBackPressed)
                     }
                 ) {
                     Icon(
@@ -191,6 +194,23 @@ fun InformationScreen(
                     Text("Github")
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, locale = "id")
+@Composable
+private fun PreviewInformationScreen() {
+    CompositionLocalProvider(
+        LocalScreenPadding provides CustomPadding(
+            horizontal = 16.dp,
+            vertical = 12.dp
+        )
+    ) {
+        QurbanTicketingTheme {
+            InformationScreen(
+               onBackPressed = {}
+            )
         }
     }
 }

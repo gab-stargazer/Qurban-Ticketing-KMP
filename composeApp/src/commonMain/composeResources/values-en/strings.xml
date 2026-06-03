@@ -26,6 +26,7 @@
     <string name="btn_add_data">Add Data</string>
     <string name="btn_add_member">Add Participant/Recipient</string>
     <string name="btn_back">Back</string>
+    <string name="btn_back_setting">Setting</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_continue_without_permission">Continue Without Permission</string>
     <string name="btn_edit_data">Edit Data</string>
@@ -82,4 +83,8 @@
     <string name="notification_title_process_failed">Proses Failed</string>
     <string name="notification_body_import_data">Import data finished with %1$s data</string>
     <string name="notification_body_save_coupon">Coupon saved at Documents Folder</string>
+
+    <!--Language-->
+    <string name="lang_id">Indonesian</string>
+    <string name="lang_en">English (US)</string>
 </resources>

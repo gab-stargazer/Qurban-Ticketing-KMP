@@ -3,7 +3,12 @@ package org.lelestacia.qurban_ticketing.ui.user_add_edit
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,8 +17,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +45,23 @@ import org.lelestacia.qurban_ticketing.ui.mobile.UserAddEditBanner
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.QurbanStatusDropdownMenu
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.QurbanTypeDropdownMenu
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent
-import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.*
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.OnAddEditPressed
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.OnAddressChanged
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.OnDeletePressed
+import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditEvent.OnNameChanged
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditState
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
+import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.ADD
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
-import qurbanticketing.composeapp.generated.resources.*
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.btn_add_data
+import qurbanticketing.composeapp.generated.resources.btn_delete_data
+import qurbanticketing.composeapp.generated.resources.btn_edit_data
+import qurbanticketing.composeapp.generated.resources.label_address
+import qurbanticketing.composeapp.generated.resources.label_name
+import qurbanticketing.composeapp.generated.resources.label_qurban_status
+import qurbanticketing.composeapp.generated.resources.tv_user_information
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -262,21 +285,47 @@ fun UserAddEditScreen(
     }
 }
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true, locale = "id")
 @Composable
-private fun PreviewAddEditScreen() {
-    QurbanTicketingTheme {
-        UserAddEditScreen(
-            state = UserAddEditState(
-                screenType = ADD,
-                name = "Joko",
-            ),
-            onEvent = {
-
-            },
-            onBackPressed = {
-
-            }
+private fun PreviewAddScreen() {
+    CompositionLocalProvider(
+        LocalScreenPadding provides CustomPadding(
+            horizontal = 16.dp,
+            vertical = 12.dp
         )
+    ) {
+        QurbanTicketingTheme {
+            UserAddEditScreen(
+                state = UserAddEditState(
+                    screenType = ADD,
+                    name = "Joko",
+                ),
+                onEvent = {},
+                onBackPressed = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, locale = "id")
+@Composable
+private fun PreviewEditScreen() {
+    CompositionLocalProvider(
+        LocalScreenPadding provides CustomPadding(
+            horizontal = 16.dp,
+            vertical = 12.dp
+        )
+    ) {
+        QurbanTicketingTheme {
+            UserAddEditScreen(
+                state = UserAddEditState(
+                    screenType = EDIT,
+                    name = "Joko",
+                    qurbanStatus = Status.Participant
+                ),
+                onEvent = {},
+                onBackPressed = {}
+            )
+        }
     }
 }

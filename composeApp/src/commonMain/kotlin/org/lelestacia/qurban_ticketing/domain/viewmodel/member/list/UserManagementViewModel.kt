@@ -13,7 +13,7 @@ import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
-import org.lelestacia.qurban_ticketing.ui.filter.FilterType
+import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_date_cannot_be_empty

@@ -6,8 +6,8 @@ import arrow.optics.optics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.lelestacia.qurban_ticketing.domain.model.User
-import org.lelestacia.qurban_ticketing.ui.filter.FilterType
-import org.lelestacia.qurban_ticketing.ui.filter.FilterType.All
+import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
+import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType.All
 
 
 @Immutable

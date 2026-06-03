@@ -38,6 +38,7 @@
     <string name="btn_add_data">Tambahkan Data</string>
     <string name="btn_add_member">Tambahkan Peserta/Penerima</string>
     <string name="btn_back">Kembali</string>
+    <string name="btn_back_setting">Pengaturan</string>
     <string name="btn_cancel">Batal</string>
     <string name="btn_continue_without_permission">Lanjutkan tanpa izin</string>
     <string name="btn_edit_data">Ubah Data</string>
@@ -81,4 +82,8 @@
     <string name="notification_title_process_failed">Proses Gagal</string>
     <string name="notification_body_import_data">Impor data selesai dengan total %1$s data</string>
     <string name="notification_body_save_coupon">Kupon berhasil disimpan pada folder Dokumen</string>
+
+    <!--Language-->
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_en">Inggris (US)</string>
 </resources>

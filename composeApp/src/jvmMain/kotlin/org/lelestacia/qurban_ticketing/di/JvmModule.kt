@@ -89,7 +89,7 @@ val jvmModule = module {
         UserManagementScreen(
             state = state,
             onEvent = vm::onEvent,
-            onNavigateTo = navigator::navigateTo
+            onNavigateTo = navigator::onNavigateTo
         )
     }
 

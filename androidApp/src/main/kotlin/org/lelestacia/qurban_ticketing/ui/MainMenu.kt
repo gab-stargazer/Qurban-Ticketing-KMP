@@ -7,22 +7,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import org.jetbrains.compose.resources.stringResource
+import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
+import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
+import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.Information
+import org.lelestacia.qurban_ticketing.util.route.Setting
 import org.lelestacia.qurban_ticketing.util.route.UserList
 import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.btn_back_setting
 import qurbanticketing.composeapp.generated.resources.btn_show_app_information
 import qurbanticketing.composeapp.generated.resources.btn_show_user_management
 import qurbanticketing.composeapp.generated.resources.tv_main_menu
@@ -93,6 +101,40 @@ fun MainMenu(
                         onClick = {
                             lifecycle.handleWhenLifecycleResumed(
                                 onResumed = {
+                                    navigateTo(Setting)
+                                }
+                            )
+                        },
+                        shape = RoundedCornerShape(25F),
+                        modifier = Modifier
+                            .aspectRatio(1F)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(Res.string.btn_back_setting),
+                        style = MaterialTheme.typography.labelMediumEmphasized.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+            }
+
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    FilledIconButton(
+                        onClick = {
+                            lifecycle.handleWhenLifecycleResumed(
+                                onResumed = {
                                     navigateTo(Information)
                                 }
                             )
@@ -117,6 +159,23 @@ fun MainMenu(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun PreviewMainMenu() {
+    CompositionLocalProvider(
+        LocalScreenPadding provides CustomPadding(
+            horizontal = 16.dp,
+            vertical = 12.dp
+        )
+    ) {
+        QurbanTicketingTheme {
+            MainMenu(
+                navigateTo = {}
+            )
         }
     }
 }

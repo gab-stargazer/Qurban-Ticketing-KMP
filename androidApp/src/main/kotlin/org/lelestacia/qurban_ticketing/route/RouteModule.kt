@@ -9,14 +9,17 @@ import org.koin.core.parameter.parameterSetOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
+import org.lelestacia.qurban_ticketing.domain.viewmodel.setting.SettingViewModel
 import org.lelestacia.qurban_ticketing.ui.MainMenu
 import org.lelestacia.qurban_ticketing.ui.information.InformationScreen
+import org.lelestacia.qurban_ticketing.ui.settings.SettingScreen
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.ui.user_add_edit.UserAddEditScreen
 import org.lelestacia.qurban_ticketing.ui.user_management.UserManagementScreen
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.Dashboard
 import org.lelestacia.qurban_ticketing.util.route.Information
+import org.lelestacia.qurban_ticketing.util.route.Setting
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserList
 
@@ -26,7 +29,7 @@ val routeModule = module {
         val navigator = koinInject<Navigator>()
         MainMenu(
             navigateTo = { destination ->
-                navigator.navigateTo(destination)
+                navigator.onNavigateTo(destination)
             }
         )
     }
@@ -38,8 +41,8 @@ val routeModule = module {
         UserManagementScreen(
             state = state,
             onEvent = viewModel::onEvent,
-            onNavigateTo = navigator::navigateTo,
-            onBackPressed = navigator::goBack
+            onNavigateTo = navigator::onNavigateTo,
+            onBackPressed = navigator::onBackPressed
         )
     }
 
@@ -57,14 +60,25 @@ val routeModule = module {
         UserAddEditScreen(
             state = state,
             onEvent = viewmodel::onEvent,
-            onBackPressed = navigator::goBack
+            onBackPressed = navigator::onBackPressed
+        )
+    }
+
+    navigation<Setting> {
+        val viewmodel = koinViewModel<SettingViewModel>()
+        val navigator = koinInject<Navigator>()
+        val state by viewmodel.state.collectAsStateWithLifecycle()
+        SettingScreen(
+            state = state,
+            onEvent = viewmodel::onEvent,
+            onBackPressed = navigator::onBackPressed
         )
     }
 
     navigation<Information> {
         val navigator = koinInject<Navigator>()
         InformationScreen(
-            goBack = navigator::goBack
+            onBackPressed = navigator::onBackPressed
         )
     }
 }

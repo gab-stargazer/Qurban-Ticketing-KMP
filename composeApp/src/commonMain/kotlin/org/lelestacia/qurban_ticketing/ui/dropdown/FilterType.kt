@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.ui.filter
+package org.lelestacia.qurban_ticketing.ui.dropdown
 
 import org.jetbrains.compose.resources.StringResource
 import qurbanticketing.composeapp.generated.resources.Res

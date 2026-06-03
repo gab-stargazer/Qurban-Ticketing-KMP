@@ -8,14 +8,14 @@ class Navigator(
 
     val backstack = mutableStateListOf<Any>(initialRoute)
 
-    fun navigateTo(
+    fun onNavigateTo(
         destination: Any,
         singleNavigate: Boolean = false,
     ) {
         backstack.add(destination)
     }
 
-    fun goBack() {
+    fun onBackPressed() {
         if (backstack.size == 1) return
 
         backstack.removeLastOrNull()

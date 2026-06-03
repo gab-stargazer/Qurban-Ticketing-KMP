@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             rememberSaveableStateHolderNavEntryDecorator(),
                             rememberViewModelStoreNavEntryDecorator(),
                         ),
-                        onBack = { navigator.goBack() },
+                        onBack = { navigator.onBackPressed() },
                         entryProvider = entryProvider,
                         transitionSpec = {
                             fadeIn() togetherWith fadeOut()

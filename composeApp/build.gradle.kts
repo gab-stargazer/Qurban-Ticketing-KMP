@@ -99,6 +99,15 @@ kotlin {
 
             //  Kotzilla
 //            implementation(libs.kotzilla.sdk.compose)
+
+
+            //  Datastore
+            api("androidx.datastore:datastore:1.2.1")
+            api("androidx.datastore:datastore-preferences:1.2.1")
+
+            //  Coil
+            api("io.coil-kt.coil3:coil-compose:3.4.0")
+            api("io.coil-kt.coil3:coil-network-okhttp:3.4.0")
         }
 
         commonTest.dependencies {

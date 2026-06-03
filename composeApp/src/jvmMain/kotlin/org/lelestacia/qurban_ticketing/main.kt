@@ -84,7 +84,7 @@ fun main() = application {
                                             NavigationRailItem(
                                                 selected = navigator.backstack.last() is UserList,
                                                 onClick = {
-                                                    navigator.navigateTo(UserList)
+                                                    navigator.onNavigateTo(UserList)
                                                 },
                                                 icon = {
                                                     Icon(
@@ -101,7 +101,7 @@ fun main() = application {
                                         NavigationRailItem(
                                             selected = false,
                                             onClick = {
-                                                navigator.goBack()
+                                                navigator.onBackPressed()
                                             },
                                             icon = {
                                                 Icon(
@@ -121,7 +121,7 @@ fun main() = application {
                                 rememberSaveableStateHolderNavEntryDecorator(),
                                 rememberViewModelStoreNavEntryDecorator(),
                             ),
-                            onBack = { navigator.goBack() },
+                            onBack = { navigator.onBackPressed() },
                             entryProvider = entryProvider
                         )
                     }

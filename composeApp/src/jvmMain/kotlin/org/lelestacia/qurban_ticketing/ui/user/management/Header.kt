@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import org.lelestacia.qurban_ticketing.ui.filter.FilterType
+import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import qurbanticketing.composeapp.generated.resources.*
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)

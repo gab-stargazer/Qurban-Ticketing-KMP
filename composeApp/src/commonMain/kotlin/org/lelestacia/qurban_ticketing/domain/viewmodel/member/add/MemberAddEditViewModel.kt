@@ -93,18 +93,18 @@ class MemberAddEditViewModel(
                         }
                     }
 
-                    navigator.goBack()
+                    navigator.onBackPressed()
                 }
             }
 
             MemberAddEditEvent.OnBackPressed -> {
-                navigator.goBack()
+                navigator.onBackPressed()
             }
 
             MemberAddEditEvent.OnDeletePressed -> {
                 viewModelScope.launch {
                     repository.deleteMember(initialData as User)
-                    navigator.goBack()
+                    navigator.onBackPressed()
                 }
             }
         }

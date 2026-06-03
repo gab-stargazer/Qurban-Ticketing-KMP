@@ -1,14 +1,26 @@
 package org.lelestacia.qurban_ticketing.ui.component
 
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import org.lelestacia.qurban_ticketing.theme.lightScheme
-import qurbanticketing.composeapp.generated.resources.*
+import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
+import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
+import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.btn_continue_without_permission
+import qurbanticketing.composeapp.generated.resources.btn_grant_permission
+import qurbanticketing.composeapp.generated.resources.permission_body_notification
+import qurbanticketing.composeapp.generated.resources.permission_title_notification
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -70,13 +82,19 @@ fun NotificationPermissionDialog(
 @Preview
 @Composable
 private fun PreviewNotificationPermissionDialog() {
-    MaterialExpressiveTheme(
-        colorScheme = lightScheme
+    CompositionLocalProvider(
+        LocalScreenPadding provides
+                CustomPadding(
+                    horizontal = 16.dp,
+                    vertical = 12.dp
+                ),
     ) {
-        NotificationPermissionDialog(
-            onDismiss = {},
-            onConfirmation = {},
-            onDeny = {},
-        )
+        QurbanTicketingTheme {
+            NotificationPermissionDialog(
+                onDismiss = {},
+                onConfirmation = {},
+                onDeny = {},
+            )
+        }
     }
 }

@@ -10,6 +10,9 @@ data object UserList
 data object Dashboard
 
 @Serializable
+data object Setting
+
+@Serializable
 data object Information
 
 @Serializable

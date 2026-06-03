@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,15 +41,16 @@ import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintC
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementState
-import org.lelestacia.qurban_ticketing.theme.lightScheme
+import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
 import org.lelestacia.qurban_ticketing.ui.component.NotificationPermissionDialog
-import org.lelestacia.qurban_ticketing.ui.filter.FilterType
+import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
 import org.lelestacia.qurban_ticketing.ui.user.management.DialogPrintCoupon
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import org.lelestacia.qurban_ticketing.util.isNotGranted
+import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
 import qurbanticketing.composeapp.generated.resources.*
@@ -419,17 +421,22 @@ fun UserManagementScreen(
 @Preview
 @Composable
 private fun PreviewUserManagementScreen() {
-    MaterialExpressiveTheme(
-        colorScheme = lightScheme
-    ) {
-        UserManagementScreen(
-            state = UserManagementState(),
-            onEvent = {},
-            onNavigateTo = {
-
-            },
-            onBackPressed = {},
-            modifier = Modifier.fillMaxSize()
+    CompositionLocalProvider(
+        LocalScreenPadding provides CustomPadding(
+            horizontal = 16.dp,
+            vertical = 12.dp
         )
+    ) {
+        QurbanTicketingTheme {
+            UserManagementScreen(
+                state = UserManagementState(),
+                onEvent = {},
+                onNavigateTo = {
+
+                },
+                onBackPressed = {},
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
