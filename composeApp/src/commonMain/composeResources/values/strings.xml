@@ -33,6 +33,7 @@
     <string name="title_add_data">Tambahkan Peserta/Penerima</string>
     <string name="title_edit_data">Ubah Peserta/Penerima</string>
     <string name="title_app_name">Qurban Ticketing</string>
+    <string name="title_information">Informasi</string>
 
     <!--Button-->
     <string name="btn_add_data">Tambahkan Data</string>
@@ -49,6 +50,7 @@
     <string name="btn_select">Pilih</string>
     <string name="btn_show_app_information">Informasi\nAplikasi</string>
     <string name="btn_show_user_management">Manajemen\nUser</string>
+    <string name="btn_understand">Mengerti</string>
 
     <!--Filter-->
     <string name="filter_type_all">Semua</string>
@@ -62,6 +64,7 @@
     <string name="dialog_print_coupon_title">Masukkan Informasi Kupon</string>
     <string name="dialog_print_coupon_error_location_cannot_be_empty">Lokasi tidak boleh kosong</string>
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Tanggal pengambilan tidak boleh kosong</string>
+    <string name="dialog_print_coupon_printing_reminder">Pada saat melakukan pencetakan kupon, harap atur PDF menggunakan konfigurasi "Fit to Paper" agar kupon tercetak secara sempurna.</string>
 
     <!--Dialog Permission-->
     <string name="permission_body_notification">Izin Notifikasi diperlukan agar dapat mengirimkan pemberitahuan kepada anda ketika proses selesai dilakukan. Anda dapat menolak izin dan proses tetap akan dilanjutkan, namun kami tidak akan dapat memberikan pemberitahuan kepada anda ketika proses selesai</string>

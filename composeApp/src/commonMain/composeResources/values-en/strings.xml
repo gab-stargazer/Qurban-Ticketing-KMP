@@ -21,6 +21,7 @@
     <string name="title_add_data">Add Participant/Recipient</string>
     <string name="title_edit_data">Edit Participant/Recipient</string>
     <string name="title_app_name">Qurban Ticketing</string>
+    <string name="title_information">Information</string>
 
     <!--Button-->
     <string name="btn_add_data">Add Data</string>
@@ -37,14 +38,15 @@
     <string name="btn_select">Select</string>
     <string name="btn_show_app_information">Application\nInformation</string>
     <string name="btn_show_user_management">User\nManagement</string>
+    <string name="btn_understand">Understand</string>
 
     <!--Text-->
     <string name="tv_main_menu">Main Menu</string>
     <string name="tv_management_banner_title">Manage Participant Recipient</string>
-    <string name="tv_management_name">Nama: %1$s</string>
+    <string name="tv_management_name">Name: %1$s</string>
     <string name="tv_management_status">Status: %1$s</string>
-    <string name="tv_management_rt_rw">Rt/RW: %1$s</string>
-    <string name="tv_management_description">Keterangan\t: %1$s</string>
+    <string name="tv_management_rt_rw">RT/RW: %1$s</string>
+    <string name="tv_management_description">Description\t: %1$s</string>
     <string name="tv_management_address">Address\t: %1$s</string>
     <string name="tv_no_participant_data">No Participant/Recipient Data</string>
     <string name="tv_type_participant">Participant</string>
@@ -63,6 +65,7 @@
     <string name="dialog_print_coupon_title">Enter Coupon Information</string>
     <string name="dialog_print_coupon_error_location_cannot_be_empty">Location can't be empty</string>
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Date can't be empty</string>
+    <string name="dialog_print_coupon_printing_reminder">When printing the coupon, please set the PDF using the "Fit to Paper" configuration so that the coupon prints perfectly.</string>
 
     <!--Dialog Permission-->
     <string name="permission_body_notification">Notification permission is required to send you a notification when the process is completed. You may decline the permission and the process will still continue; however, we will not be able to notify you once it is finished.</string>
@@ -82,7 +85,7 @@
 
     <!--Notification-->
     <string name="notification_title_process_finished">Process Finished</string>
-    <string name="notification_title_process_failed">Proses Failed</string>
+    <string name="notification_title_process_failed">Process Failed</string>
     <string name="notification_body_import_data">Import data finished with %1$s data</string>
     <string name="notification_body_save_coupon">Coupon saved at Documents Folder</string>
 
