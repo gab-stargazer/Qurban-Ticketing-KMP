@@ -16,6 +16,7 @@
     <string name="label_qurban_status">Qurban Status</string>
     <string name="label_qurban_type">Qurban Type</string>
     <string name="label_filter">Filter</string>
+    <string name="label_not_selected">Not Selected</string>
 
     <!--Title-->
     <string name="title_add_data">Add Participant/Recipient</string>
@@ -60,11 +61,14 @@
 
     <!--Dialog Print Coupon-->
     <string name="dialog_print_coupon_label_location">Qurban Location</string>
-    <string name="dialog_print_coupon_no_pickup_date">Not Selected</string>
+    <string name="dialog_print_coupon_label_start_time">Start Time</string>
+    <string name="dialog_print_coupon_label_finish_time">Finish Time</string>
     <string name="dialog_print_coupon_pickup_date">Pickup Date</string>
     <string name="dialog_print_coupon_title">Enter Coupon Information</string>
     <string name="dialog_print_coupon_error_location_cannot_be_empty">Location can't be empty</string>
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Date can't be empty</string>
+    <string name="dialog_print_coupon_error_start_time_cannot_be_emptu">Start time for distribution can't be empty</string>
+    <string name="dialog_print_coupon_error_finish_time_cannot_be_emptu">Finish time for distribution can't be empty</string>
     <string name="dialog_print_coupon_printing_reminder">When printing the coupon, please set the PDF using the "Fit to Paper" configuration so that the coupon prints perfectly.</string>
 
     <!--Dialog Permission-->
@@ -77,7 +81,8 @@
     <!--Coupon-->
     <string name="coupon_title">Qurban Recipient Coupon %1$s\n</string>
     <string name="coupon_title_participant">Qurban Participant Coupon %1$s\n</string>
-    <string name="coupon_name_and_information">Name: %1$s\n</string>
+    <string name="coupon_name">Name: %1$s\n</string>
+    <string name="coupon_name_and_information">Name: %1$s [%2$s]\n</string>
     <string name="coupon_pickup_location">Location: %1$s \n</string>
     <string name="coupon_pickup_date">Pickup Date: %1$s\n</string>
     <string name="coupon_pickup_time">Pickup Time: %1$s - %2$s</string>

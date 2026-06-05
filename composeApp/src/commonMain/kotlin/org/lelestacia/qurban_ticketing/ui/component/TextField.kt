@@ -3,6 +3,7 @@ package org.lelestacia.qurban_ticketing.ui.component
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -53,6 +54,48 @@ fun CustomTextField(
         shape = RoundedCornerShape(25F),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
+        textStyle = textStyle,
+        readOnly = readOnly,
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun CustomTextField(
+    modifier: Modifier = Modifier,
+    state: TextFieldState,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    label: @Composable () -> Unit,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    readOnly: Boolean = false,
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+) {
+    TextField(
+        state = state,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        label = {
+            label()
+        },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = containerColor,
+            focusedContainerColor = containerColor,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent
+        ),
+        supportingText = supportingText,
+        isError = isError,
+        shape = RoundedCornerShape(25F),
+        keyboardOptions = keyboardOptions,
         textStyle = textStyle,
         readOnly = readOnly,
         modifier = modifier,

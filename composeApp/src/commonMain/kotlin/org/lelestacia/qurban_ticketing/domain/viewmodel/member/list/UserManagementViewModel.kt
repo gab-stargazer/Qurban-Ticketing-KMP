@@ -5,19 +5,36 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.DialogPermissionEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.ImportDataEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponDialogDismissed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnSearchQueryChanged
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnUserClicked
 import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_date_cannot_be_empty
+import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_finish_time_cannot_be_emptu
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_location_cannot_be_empty
+import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_start_time_cannot_be_emptu
 
 class UserManagementViewModel(
     private val userRepository: UserRepository,
@@ -78,11 +95,14 @@ class UserManagementViewModel(
             isFilterMenuOpened = state.isFilterMenuOpened,
             isFabMenuExpanded = state.isFabMenuExpanded,
             isNotificationPermissionDialogOpened = state.isNotificationPermissionDialogOpened,
+
+            //  Permission
             isNotificationDialogForImportDataOpened = state.isNotificationDialogForImportDataOpened,
             isNotificationDialogForPrintCouponOpened = state.isNotificationDialogForPrintCouponOpened,
 
             //  Dialog Print Coupon
-            isDialogPrintCouponShowed = state.isDialogPrintCouponShowed,
+            isPrintingReminderOpened = state.isPrintingReminderOpened,
+            isPrintingDialogOpened = state.isPrintingDialogOpened,
             dialogPrintCouponState = state.dialogPrintCouponState,
 
             users = _users,
@@ -167,13 +187,11 @@ class UserManagementViewModel(
                             } else if (state.isNotificationDialogForPrintCouponOpened) {
                                 _currentState.update { currentState ->
                                     currentState.copy(
-                                        isDialogPrintCouponShowed = false,
                                         isNotificationDialogForImportDataOpened = false,
-                                        isNotificationDialogForPrintCouponOpened = false
+                                        isNotificationDialogForPrintCouponOpened = false,
+                                        isPrintingReminderOpened = true
                                     )
                                 }
-
-                                onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission)
                             }
                         }
                     }
@@ -209,25 +227,37 @@ class UserManagementViewModel(
             }
 
 
-            OnPrintCouponClicked -> _currentState.update { currentState ->
-                currentState.copy(
-                    isFabMenuExpanded = false,
-                    isDialogPrintCouponShowed = true
-                )
+            is OnPrintCouponClicked -> _currentState.update { currentState ->
+                if (event.isNotificationPermissionNeeded) {
+                    currentState.copy(
+                        isFabMenuExpanded = false,
+                        isNotificationDialogForPrintCouponOpened = true
+                    )
+                } else {
+                    currentState.copy(
+                        isFabMenuExpanded = false,
+                        isPrintingReminderOpened = true
+                    )
+                }
             }
 
             //  Print Coupon Dialog
-            is DialogPrintCouponEvent.OnLocationChanged -> _currentState.update { currentState ->
+            OnPrintingReminderShouldBeDisplayed -> _currentState.update { currentState ->
                 currentState.copy(
-                    dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
-                        location = event.newLocation,
-                        locationError = null
-                    )
+                    isPrintingReminderOpened = true
+                )
+            }
+
+            OnPrintingDialogShouldBeDisplayed -> _currentState.update { currentState ->
+                currentState.copy(
+                    isPrintingReminderOpened = false,
+                    isPrintingDialogOpened = true
                 )
             }
 
             is DialogPrintCouponEvent.OnDatePicked -> {
-                _currentState.value.dialogPrintCouponState.datePickerState.selectedDateMillis = event.selectedDate
+                _currentState.value.dialogPrintCouponState.datePickerState.selectedDateMillis =
+                    event.selectedDate
                 _currentState.update { currentState ->
                     currentState.copy(
                         dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
@@ -237,20 +267,47 @@ class UserManagementViewModel(
                 }
             }
 
+            is DialogPrintCouponEvent.OnStartTimePicked -> {
+                _currentState.value.dialogPrintCouponState.startTime.hour = event.hour.value
+                _currentState.value.dialogPrintCouponState.startTime.minute = event.minute.value
+                _currentState.update { currentState ->
+                    currentState.copy(
+                        dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
+                            startTimeError = null
+                        )
+                    )
+                }
+            }
+
+            is DialogPrintCouponEvent.OnFinishTimePicked -> {
+                _currentState.value.dialogPrintCouponState.finishTime.hour = event.hour.value
+                _currentState.value.dialogPrintCouponState.finishTime.minute = event.minute.value
+                _currentState.update { currentState ->
+                    currentState.copy(
+                        dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
+                            finishTimeError = null
+                        )
+                    )
+                }
+            }
+
             OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
                 currentState.copy(
-                    isDialogPrintCouponShowed = false
+                    isPrintingDialogOpened = false,
+                    dialogPrintCouponState = DialogPrintCouponState()
                 )
             }
 
-            DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission -> {
+            DialogPrintCouponEvent.OnPrintCouponConfirmed -> {
                 val validationResult = validateDialogPrintCoupon()
                 if (validationResult.locationError != null || validationResult.dateError != null) {
                     _currentState.update { currentState ->
                         currentState.copy(
                             dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
                                 locationError = validationResult.locationError,
-                                datePickerStateError = validationResult.dateError
+                                datePickerStateError = validationResult.dateError,
+                                startTimeError = validationResult.startTimeError,
+                                finishTimeError = validationResult.finishTimeError
                             )
                         )
                     }
@@ -258,35 +315,18 @@ class UserManagementViewModel(
                 }
 
                 printCouponScheduler.execute(
-                    state.value.dialogPrintCouponState.location,
-                    (state.value.dialogPrintCouponState.datePickerState.selectedDateMillis ?: return).toFormattedDate()
+                     _currentState.value.dialogPrintCouponState.location.text.toString(),
+                     _currentState.value.dialogPrintCouponState.datePickerState.selectedDateMillis!!.toFormattedDate(),
+                    _currentState.value.dialogPrintCouponState.startTime.hour,
+                    _currentState.value.dialogPrintCouponState.startTime.minute,
+                    _currentState.value.dialogPrintCouponState.finishTime.hour,
+                    _currentState.value.dialogPrintCouponState.finishTime.minute,
                 )
 
                 _currentState.update { currentState ->
                     currentState.copy(
-                        dialogPrintCouponState = DialogPrintCouponState(),
-                        isDialogPrintCouponShowed = false
-                    )
-                }
-            }
-
-            DialogPrintCouponEvent.OnPrintCouponConfirmedWithoutPermission -> {
-                val validationResult = validateDialogPrintCoupon()
-                if (validationResult.locationError != null || validationResult.dateError != null) {
-                    _currentState.update { currentState ->
-                        currentState.copy(
-                            dialogPrintCouponState = currentState.dialogPrintCouponState.copy(
-                                locationError = validationResult.locationError,
-                                datePickerStateError = validationResult.dateError
-                            )
-                        )
-                    }
-                    return
-                }
-
-                _currentState.update { currentState ->
-                    currentState.copy(
-                        isNotificationDialogForPrintCouponOpened = true
+                        isPrintingDialogOpened = false,
+                        dialogPrintCouponState = DialogPrintCouponState()
                     )
                 }
             }
@@ -301,8 +341,28 @@ class UserManagementViewModel(
     }
 
     private fun validateDialogPrintCoupon(): DialogPrintCouponValidationResult {
-        val locationError = state.value.dialogPrintCouponState.location.isBlank()
-        val dateError = state.value.dialogPrintCouponState.datePickerState.selectedDateMillis == null
+        val currentState = state.value
+        val locationError = currentState
+            .dialogPrintCouponState
+            .location
+            .text
+            .toString()
+            .isBlank()
+
+        val dateError = currentState
+            .dialogPrintCouponState
+            .datePickerState
+            .selectedDateMillis == null
+
+        val startTimeError = currentState
+            .dialogPrintCouponState
+            .startTime
+            .hour == 0
+
+        val finishTimeError = currentState
+            .dialogPrintCouponState
+            .finishTime
+            .hour == 0
 
         return DialogPrintCouponValidationResult(
             locationError =
@@ -312,6 +372,14 @@ class UserManagementViewModel(
             dateError =
                 if (dateError) {
                     Res.string.dialog_print_coupon_error_date_cannot_be_empty
+                } else null,
+            startTimeError =
+                if (startTimeError) {
+                    Res.string.dialog_print_coupon_error_start_time_cannot_be_emptu
+                } else null,
+            finishTimeError =
+                if (finishTimeError) {
+                    Res.string.dialog_print_coupon_error_finish_time_cannot_be_emptu
                 } else null
         )
     }
@@ -319,5 +387,7 @@ class UserManagementViewModel(
     private data class DialogPrintCouponValidationResult(
         val locationError: StringResource?,
         val dateError: StringResource?,
+        val startTimeError: StringResource?,
+        val finishTimeError: StringResource?
     )
 }

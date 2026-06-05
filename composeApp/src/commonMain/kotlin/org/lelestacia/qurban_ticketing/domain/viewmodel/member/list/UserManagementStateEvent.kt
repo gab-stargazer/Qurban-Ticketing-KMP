@@ -21,8 +21,16 @@ data class UserManagementState(
 
     val isNotificationDialogForImportDataOpened: Boolean = false,
     val isNotificationDialogForPrintCouponOpened: Boolean = false,
+
+
+    //  Permission Dialog
+
+
+
+
     //  Create Coupon
-    val isDialogPrintCouponShowed: Boolean = false,
+    val isPrintingReminderOpened: Boolean = false,
+    val isPrintingDialogOpened: Boolean = false,
     val dialogPrintCouponState: DialogPrintCouponState = DialogPrintCouponState(),
 
 
@@ -52,8 +60,10 @@ sealed interface UserManagementEvent {
 
 
     //  Print Coupon
-    data object OnPrintCouponClicked : UserManagementEvent
+    data class OnPrintCouponClicked(val isNotificationPermissionNeeded: Boolean) : UserManagementEvent
     data object OnPrintCouponDialogDismissed : UserManagementEvent
+    data object OnPrintingReminderShouldBeDisplayed: UserManagementEvent
+    data object OnPrintingDialogShouldBeDisplayed: UserManagementEvent
 
 
     /**

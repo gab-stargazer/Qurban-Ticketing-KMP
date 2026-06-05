@@ -3,16 +3,30 @@ package org.lelestacia.qurban_ticketing.ui.user_management
 import android.Manifest
 import android.os.Build
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +40,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import androidx.paging.LoadState
@@ -39,21 +55,34 @@ import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.DialogPermissionEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.ImportDataEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponDialogDismissed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnSearchQueryChanged
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnUserClicked
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementState
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
 import org.lelestacia.qurban_ticketing.ui.component.NotificationPermissionDialog
+import org.lelestacia.qurban_ticketing.ui.component.PrintCouponDialog
+import org.lelestacia.qurban_ticketing.ui.component.PrintReminder
 import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.ui.mobile.ManagementTicketingBanner
-import org.lelestacia.qurban_ticketing.ui.user.management.DialogPrintCoupon
+import org.lelestacia.qurban_ticketing.ui.user.management.UserManagementFabMenu
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import org.lelestacia.qurban_ticketing.util.isNotGranted
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
-import qurbanticketing.composeapp.generated.resources.*
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.label_search_name
+import qurbanticketing.composeapp.generated.resources.tv_management_banner_title
+import qurbanticketing.composeapp.generated.resources.tv_no_participant_data
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -78,7 +107,11 @@ fun UserManagementScreen(
     val excelSelectionLauncher = rememberFilePickerLauncher(
         type = FileKitType.File("xlsx")
     ) { file ->
-        onEvent(ImportDataEvent.OnImportData(stringUri = file?.path ?: return@rememberFilePickerLauncher))
+        onEvent(
+            ImportDataEvent.OnImportData(
+                stringUri = file?.path ?: return@rememberFilePickerLauncher
+            )
+        )
     }
 
     LaunchedEffect(state.shouldLaunchExcelLauncher) {
@@ -92,11 +125,6 @@ fun UserManagementScreen(
             onPermissionResult = { _ ->
                 onEvent(DialogPermissionEvent.OnGrantPermission)
             }
-        )
-
-    val writeStoragePermission =
-        rememberPermissionState(
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
 
     //  Dialog
@@ -115,132 +143,84 @@ fun UserManagementScreen(
         )
     }
 
-    if (state.isDialogPrintCouponShowed) {
-        DialogPrintCoupon(
-            state = state.dialogPrintCouponState,
-            onEvent = onEvent,
-            onConfirm = {
-                if (Build.VERSION.SDK_INT >= 33) {
-                    if (notificationPermission.status.isGranted) {
-                        onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission)
-                    } else {
-                        //  It just asks if the user want to grant notification permission or not
-                        onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithoutPermission)
-                    }
-                } else {
-                    onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission)
-                }
+    if (state.isPrintingReminderOpened) {
+        Dialog(
+            onDismissRequest = {
+
             },
-            onDismiss = {
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            PrintReminder(
+                onConfirmation = {
+                    onEvent(OnPrintingDialogShouldBeDisplayed)
+                }
+            )
+        }
+    }
+
+    if (state.isPrintingDialogOpened) {
+        Dialog(
+            onDismissRequest = {
                 onEvent(OnPrintCouponDialogDismissed)
-            }
-        )
+            },
+            properties = DialogProperties(
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            PrintCouponDialog(
+                state = state.dialogPrintCouponState,
+                onEvent = onEvent,
+                onConfirm = {
+                    onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmed)
+                }
+            )
+        }
     }
 
     //  Content
     Scaffold(
         floatingActionButton = {
-            FloatingActionButtonMenu(
-                expanded = state.isFabMenuExpanded,
-                button = {
-                    ToggleFloatingActionButton(
-                        checked = state.isFabMenuExpanded,
-                        onCheckedChange = { isFabMenuExpanded ->
-                            onEvent(OnFabMenuStateClicked(isFabMenuExpanded))
-                        },
-                    ) {
-                        AnimatedContent(state.isFabMenuExpanded) { isExpanded ->
-                            when (isExpanded) {
-                                true -> {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                }
-
-                                false -> {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                }
-                            }
+            UserManagementFabMenu(
+                isFabExpanded = state.isFabMenuExpanded,
+                onFabStateChange =  { newState ->
+                    onEvent(OnFabMenuStateClicked(newState))
+                },
+                onImportData = {
+                    lifecycle.handleWhenLifecycleResumed {
+                        //  Check for notification only
+                        if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
+                            excelSelectionLauncher.launch()
+                        } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
+                            onEvent(ImportDataEvent.OnClick)
+                        } else {
+                            onEvent(OnFabMenuStateClicked(false))
+                            excelSelectionLauncher.launch()
+                        }
+                    }
+                },
+                onAddData = {
+                    lifecycle.handleWhenLifecycleResumed {
+                        onEvent(OnFabMenuStateClicked(newFabMenuState = false))
+                        onNavigateTo(UserAddEdit())
+                    }
+                },
+                onPrintCoupon = {
+                    lifecycle.handleWhenLifecycleResumed {
+                        //  Check for notification only
+                        if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
+                            onEvent(OnPrintCouponClicked(false))
+                        } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
+                            onEvent(OnPrintCouponClicked(true))
+                        } else {
+                            onEvent(OnPrintCouponClicked(false))
                         }
                     }
                 }
-            ) {
-                FloatingActionButtonMenuItem(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            //  Check for notification only
-                            if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
-                                excelSelectionLauncher.launch()
-                            } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
-                                onEvent(ImportDataEvent.OnClick)
-                            } else {
-                                excelSelectionLauncher.launch()
-                            }
-                        }
-                    },
-                    icon = {},
-                    text = {
-                        Text(
-                            text = stringResource(Res.string.btn_import_data),
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                    },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-
-                FloatingActionButtonMenuItem(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            onEvent(OnFabMenuStateClicked(newFabMenuState = false))
-                            onNavigateTo(UserAddEdit())
-                        }
-                    },
-                    icon = {},
-                    text = {
-                        Text(
-                            text = stringResource(Res.string.btn_add_member),
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                    },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-
-                FloatingActionButtonMenuItem(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            if (Build.VERSION.SDK_INT <= 29 && writeStoragePermission.status.isNotGranted()) {
-                                writeStoragePermission.launchPermissionRequest()
-                                return@handleWhenLifecycleResumed
-                            }
-
-                            onEvent(OnPrintCouponClicked)
-                        }
-                    },
-                    icon = {},
-                    text = {
-                        Text(
-                            text = stringResource(Res.string.btn_print_coupon),
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                    },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            )
         },
         contentWindowInsets = WindowInsets(),
         modifier = modifier
@@ -380,8 +360,17 @@ fun UserManagementScreen(
                                                         when (interaction) {
                                                             UserItemInteraction.OnClick -> {
                                                                 when (isSelected) {
-                                                                    true -> onEvent(OnUserClicked(null))
-                                                                    false -> onEvent(OnUserClicked(index))
+                                                                    true -> onEvent(
+                                                                        OnUserClicked(
+                                                                            null
+                                                                        )
+                                                                    )
+
+                                                                    false -> onEvent(
+                                                                        OnUserClicked(
+                                                                            index
+                                                                        )
+                                                                    )
                                                                 }
                                                                 keyboardManager?.hide()
                                                                 focusManager.clearFocus()
@@ -389,7 +378,11 @@ fun UserManagementScreen(
 
                                                             UserItemInteraction.OnEdit -> {
                                                                 lifecycle.handleWhenLifecycleResumed {
-                                                                    onEvent(OnFabMenuStateClicked(newFabMenuState = false))
+                                                                    onEvent(
+                                                                        OnFabMenuStateClicked(
+                                                                            newFabMenuState = false
+                                                                        )
+                                                                    )
                                                                     onNavigateTo(
                                                                         UserAddEdit(
                                                                             screenType = EDIT,

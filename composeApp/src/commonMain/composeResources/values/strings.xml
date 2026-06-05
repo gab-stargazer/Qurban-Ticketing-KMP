@@ -28,6 +28,7 @@
     <string name="label_qurban_status">Status Qurban</string>
     <string name="label_qurban_type">Jenis Qurban</string>
     <string name="label_filter">Filter</string>
+    <string name="label_not_selected">Belum dipilih</string>
 
     <!--Title-->
     <string name="title_add_data">Tambahkan Peserta/Penerima</string>
@@ -59,11 +60,14 @@
 
     <!--Dialog Print Coupon-->
     <string name="dialog_print_coupon_label_location">Lokasi Qurban</string>
+    <string name="dialog_print_coupon_label_start_time">Waktu Awal Pengambilan</string>
+    <string name="dialog_print_coupon_label_finish_time">Waktu Akhir Pengambilan</string>
     <string name="dialog_print_coupon_pickup_date">Tanggal Pengambilan</string>
-    <string name="dialog_print_coupon_no_pickup_date">Belum dipilih</string>
     <string name="dialog_print_coupon_title">Masukkan Informasi Kupon</string>
     <string name="dialog_print_coupon_error_location_cannot_be_empty">Lokasi tidak boleh kosong</string>
     <string name="dialog_print_coupon_error_date_cannot_be_empty">Tanggal pengambilan tidak boleh kosong</string>
+    <string name="dialog_print_coupon_error_start_time_cannot_be_emptu">Waktu awal pengambilan tidak boleh kosong</string>
+    <string name="dialog_print_coupon_error_finish_time_cannot_be_emptu">Waktu akhir pengambilan tidak boleh kosong</string>
     <string name="dialog_print_coupon_printing_reminder">Pada saat melakukan pencetakan kupon, harap atur PDF menggunakan konfigurasi "Fit to Paper" agar kupon tercetak secara sempurna.</string>
 
     <!--Dialog Permission-->
@@ -76,7 +80,8 @@
     <!--Coupon-->
     <string name="coupon_title">Kupon Penerima Qurban %1$s\n</string>
     <string name="coupon_title_participant">Kupon Peserta Qurban %1$s\n</string>
-    <string name="coupon_name_and_information">Nama: %1$s\n</string>
+    <string name="coupon_name">Nama: %1$s\n</string>
+    <string name="coupon_name_and_information">Nama: %1$s [%2$s]\n</string>
     <string name="coupon_pickup_location">Lokasi: %1$s \n</string>
     <string name="coupon_pickup_date">Tanggal Pengambilan: %1$s\n</string>
     <string name="coupon_pickup_time">Waktu Pengambilan: %1$s - %2$s</string>

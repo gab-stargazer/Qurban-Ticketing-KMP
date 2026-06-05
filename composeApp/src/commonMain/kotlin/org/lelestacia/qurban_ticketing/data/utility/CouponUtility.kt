@@ -8,7 +8,11 @@ import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
-import com.itextpdf.layout.element.*
+import com.itextpdf.layout.element.AreaBreak
+import com.itextpdf.layout.element.Cell
+import com.itextpdf.layout.element.Paragraph
+import com.itextpdf.layout.element.Table
+import com.itextpdf.layout.element.Text
 import com.itextpdf.layout.properties.AreaBreakType
 import com.itextpdf.layout.properties.HorizontalAlignment
 import com.itextpdf.layout.properties.VerticalAlignment
@@ -19,7 +23,21 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
-import qurbanticketing.composeapp.generated.resources.*
+import org.lelestacia.qurban_ticketing.util.Hour
+import org.lelestacia.qurban_ticketing.util.Location
+import org.lelestacia.qurban_ticketing.util.Minute
+import org.lelestacia.qurban_ticketing.util.PickupDate
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.coupon_file_name
+import qurbanticketing.composeapp.generated.resources.coupon_name
+import qurbanticketing.composeapp.generated.resources.coupon_name_and_information
+import qurbanticketing.composeapp.generated.resources.coupon_participant
+import qurbanticketing.composeapp.generated.resources.coupon_pickup_date
+import qurbanticketing.composeapp.generated.resources.coupon_pickup_location
+import qurbanticketing.composeapp.generated.resources.coupon_pickup_time
+import qurbanticketing.composeapp.generated.resources.coupon_recipient
+import qurbanticketing.composeapp.generated.resources.coupon_title
+import qurbanticketing.composeapp.generated.resources.coupon_title_participant
 import java.time.chrono.HijrahDate
 import java.time.temporal.ChronoField
 
@@ -49,8 +67,10 @@ class CouponUtility(
 
     suspend fun saveCoupons(
         userData: List<CouponData>,
-        qurbanLocation: String,
-        qurbanPickupDate: String
+        qurbanLocation: Location,
+        qurbanPickupDate: PickupDate,
+        qurbanStartTime: Pair<Hour, Minute>,
+        qurbanFinishTime: Pair<Hour, Minute>,
     ) {
         val currentYear: Int = HijrahDate.now().get(ChronoField.YEAR)
         val currentYearFormatted = "$currentYear Hijriah"
@@ -86,7 +106,7 @@ class CouponUtility(
                         cell.setNextRenderer(
                             CouponCellRenderer(
                                 cell,
-                                when(currentData.status) {
+                                when (currentData.status) {
                                     Status.Recipient -> couponRecipient
                                     Status.Participant -> couponParticipant
                                 }
@@ -114,10 +134,20 @@ class CouponUtility(
                                     )
                                     .add(
                                         Text(
-                                            getString(
-                                                Res.string.coupon_name_and_information,
-                                                currentData.name
-                                            )
+                                            if (currentData.address.isNotBlank() && currentData.address.lowercase()
+                                                    .startsWith("rt") && currentData.address.length < 6
+                                            ) {
+                                                getString(
+                                                    Res.string.coupon_name_and_information,
+                                                    currentData.name,
+                                                    currentData.address
+                                                )
+                                            } else {
+                                                getString(
+                                                    Res.string.coupon_name,
+                                                    currentData.name
+                                                )
+                                            }
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
                                             .setFontSize(9F)
@@ -126,7 +156,7 @@ class CouponUtility(
                                         Text(
                                             getString(
                                                 Res.string.coupon_pickup_location,
-                                                qurbanLocation
+                                                qurbanLocation.value
                                             )
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
@@ -136,7 +166,7 @@ class CouponUtility(
                                         Text(
                                             getString(
                                                 Res.string.coupon_pickup_date,
-                                                qurbanPickupDate
+                                                qurbanPickupDate.value
                                             )
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
@@ -146,8 +176,20 @@ class CouponUtility(
                                         Text(
                                             getString(
                                                 Res.string.coupon_pickup_time,
-                                                "14:00",
-                                                "16:00"
+                                                "${qurbanStartTime.first.value}:${
+                                                    if (qurbanStartTime.second.value == 0) {
+                                                        "00"
+                                                    } else {
+                                                        qurbanStartTime.second.value
+                                                    }
+                                                }",
+                                                "${qurbanFinishTime.first.value}:${
+                                                    if (qurbanFinishTime.second.value == 0) {
+                                                        "00"
+                                                    } else {
+                                                        qurbanFinishTime.second.value
+                                                    }
+                                                }",
                                             )
                                         )
                                             .setFont(PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN))
@@ -175,6 +217,7 @@ class CouponUtility(
 
     data class CouponData(
         val name: String,
+        val address: String,
         val status: Status,
         val type: Type
     )

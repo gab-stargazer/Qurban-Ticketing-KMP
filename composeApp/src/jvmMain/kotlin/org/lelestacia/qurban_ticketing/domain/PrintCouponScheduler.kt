@@ -17,10 +17,11 @@ class PrintCouponScheduler(
 
     override fun execute(vararg input: Any) {
         CoroutineScope(Dispatchers.IO).launch {
-            repository.saveCoupons(
-                qurbanLocation = input.first() as String,
-                qurbanPickupDate = input.last() as String
-            )
+//            repository.printCoupons(
+//                qurbanLocation = input.first() as String,
+//                qurbanPickupDate = input.last() as String,
+//
+//            )
 
             snackbarHostState.showSnackbar(getString(Res.string.notification_body_save_coupon))
         }

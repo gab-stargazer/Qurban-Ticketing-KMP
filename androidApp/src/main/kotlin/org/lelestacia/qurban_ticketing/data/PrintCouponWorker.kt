@@ -16,6 +16,10 @@ import org.jetbrains.compose.resources.getString
 import org.koin.java.KoinJavaComponent.inject
 import org.lelestacia.qurban_ticketing.R
 import org.lelestacia.qurban_ticketing.domain.repository.UtilRepository
+import org.lelestacia.qurban_ticketing.util.Hour
+import org.lelestacia.qurban_ticketing.util.Location
+import org.lelestacia.qurban_ticketing.util.Minute
+import org.lelestacia.qurban_ticketing.util.PickupDate
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.notification_body_save_coupon
 import qurbanticketing.composeapp.generated.resources.notification_title_process_failed
@@ -31,9 +35,17 @@ class PrintCouponWorker(
 
     override suspend fun doWork(): Result {
         try {
-            repository.saveCoupons(
-                qurbanLocation = inputData.getString(LOCATION) ?: return Result.failure(),
-                qurbanPickupDate = inputData.getString(PICKUP_DATE) ?: return Result.failure()
+            repository.printCoupons(
+                qurbanLocation = Location(inputData.getString(LOCATION) ?: return Result.failure()),
+                qurbanPickupDate = PickupDate(inputData.getString(PICKUP_DATE) ?: return Result.failure()),
+                qurbanStartTIme = Pair(
+                    first = Hour(inputData.getInt(START_HOUR, 0)),
+                    second = Minute(inputData.getInt(START_MINUTE, 0))
+                ),
+                qurbanFinishTime = Pair(
+                    first = Hour(inputData.getInt(FINISH_HOUR, 0)),
+                    second = Minute(inputData.getInt(FINISH_MINUTE, 0))
+                )
             )
 
             val channel = NotificationChannel(
@@ -44,7 +56,8 @@ class PrintCouponWorker(
                 description = "App general notifications"
             }
 
-            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
             postNotification()
 
@@ -57,19 +70,21 @@ class PrintCouponWorker(
             ).apply {
                 description = "App general notifications"
             }
-            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
 
-            val notificationBuilder = NotificationCompat.Builder(applicationContext, "default_channel")
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(
-                    getString(
-                        resource = Res.string.notification_title_process_failed
+            val notificationBuilder =
+                NotificationCompat.Builder(applicationContext, "default_channel")
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle(
+                        getString(
+                            resource = Res.string.notification_title_process_failed
+                        )
                     )
-                )
-                .setContentText(e.message ?: e.stackTraceToString())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
+                    .setContentText(e.message ?: e.stackTraceToString())
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
 
             with(NotificationManagerCompat.from(applicationContext)) {
                 if (Build.VERSION.SDK_INT >= 32) {
@@ -127,5 +142,9 @@ class PrintCouponWorker(
     companion object {
         const val LOCATION = "location"
         const val PICKUP_DATE = "pickupDate"
+        const val START_HOUR = "startHour"
+        const val START_MINUTE = "startMinute"
+        const val FINISH_HOUR = "finishHour"
+        const val FINISH_MINUTE = "finishMinute"
     }
 }

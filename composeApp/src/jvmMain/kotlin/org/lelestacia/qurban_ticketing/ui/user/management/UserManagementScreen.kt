@@ -20,8 +20,13 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.path
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.*
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.ImportDataEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnSearchQueryChanged
 import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementState
+import org.lelestacia.qurban_ticketing.ui.component.PrintCouponDialog
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
 import kotlin.uuid.ExperimentalUuidApi
@@ -46,16 +51,16 @@ fun UserManagementScreen(
         onEvent(ImportDataEvent.OnImportData(stringUri = file?.path ?: return@rememberFilePickerLauncher))
     }
 
-    if (state.isDialogPrintCouponShowed) {
-        DialogPrintCoupon(
+    if (state.isPrintingDialogOpened) {
+        PrintCouponDialog(
             state = state.dialogPrintCouponState,
             onEvent = onEvent,
             onConfirm = {
-                onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmedWithPermission)
+                onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmed)
             },
-            onDismiss = {
-                onEvent(OnPrintCouponDialogDismissed)
-            }
+//            onDismiss = {
+//                onEvent(OnPrintCouponDialogDismissed)
+//            }
         )
     }
 
@@ -76,7 +81,7 @@ fun UserManagementScreen(
                     onNavigateTo(UserAddEdit())
                 },
                 onPrintCoupon = {
-                    onEvent(OnPrintCouponClicked)
+                    onEvent(OnPrintingReminderShouldBeDisplayed)
                 }
             )
         },
