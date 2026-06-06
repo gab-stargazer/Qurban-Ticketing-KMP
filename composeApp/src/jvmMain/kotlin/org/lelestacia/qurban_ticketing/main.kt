@@ -17,6 +17,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Tray
+import androidx.compose.ui.window.TrayState
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -37,7 +39,7 @@ import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import org.lelestacia.qurban_ticketing.util.route.UserList
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.logo_equrban_desktop
-import java.util.*
+import java.util.Locale
 
 @OptIn(KoinExperimentalAPI::class)
 fun main() = application {
@@ -51,15 +53,21 @@ fun main() = application {
     val navigator = koinInject<Navigator>()
     val snackbarHostState = koinInject<SnackbarHostState>()
     val entryProvider = koinEntryProvider<Any>()
+    val trayState = koinInject<TrayState>()
 
-
-
+    Tray(
+        painterResource(resource = Res.drawable.logo_equrban_desktop),
+        state = trayState
+    )
 
     Window(
         icon = painterResource(Res.drawable.logo_equrban_desktop),
         onCloseRequest = ::exitApplication,
         title = "Qurban Ticketing",
     ) {
+
+
+
         LaunchedEffect(Unit) {
             Locale.setDefault(Locale.forLanguageTag("id"))
         }

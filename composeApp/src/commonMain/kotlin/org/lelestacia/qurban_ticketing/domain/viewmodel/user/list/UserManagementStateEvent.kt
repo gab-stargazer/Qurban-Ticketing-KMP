@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
+package org.lelestacia.qurban_ticketing.domain.viewmodel.user.list
 
 import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData

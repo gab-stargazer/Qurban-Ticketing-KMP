@@ -6,9 +6,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.lelestacia.qurban_ticketing.domain.viewmodel.MemberListViewModel
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.add.MemberAddEditViewModel
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.domain.viewmodel.setting.SettingViewModel
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user_add_edit.UserAddEditViewModel
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user_list.UserListViewModel
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 
 val domainModule = module {
@@ -16,7 +16,7 @@ val domainModule = module {
 
     viewModelOf(::MemberListViewModel)
     viewModel {
-        MemberAddEditViewModel(
+        UserAddEditViewModel(
             screenType = get(),
             initialData = getOrNull(),
             navigator = get(),
@@ -26,7 +26,7 @@ val domainModule = module {
 
     viewModelOf(::UserAddEditViewmodel)
     viewModel {
-        UserManagementViewModel(
+        UserListViewModel(
             userRepository = get(),
             importDataScheduler = get(qualifier = named(name = "Import Data Scheduler")),
             printCouponScheduler = get(qualifier = named(name = "Print Coupon Scheduler")),

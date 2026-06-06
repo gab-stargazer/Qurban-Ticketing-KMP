@@ -12,21 +12,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.path
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.FilterEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.ImportDataEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnFabMenuStateClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnSearchQueryChanged
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.ImportDataEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnSearchQueryChanged
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementState
 import org.lelestacia.qurban_ticketing.ui.component.PrintCouponDialog
+import org.lelestacia.qurban_ticketing.ui.component.PrintReminder
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
 import kotlin.uuid.ExperimentalUuidApi
@@ -52,16 +55,31 @@ fun UserManagementScreen(
     }
 
     if (state.isPrintingDialogOpened) {
-        PrintCouponDialog(
-            state = state.dialogPrintCouponState,
-            onEvent = onEvent,
-            onConfirm = {
-                onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmed)
-            },
-//            onDismiss = {
-//                onEvent(OnPrintCouponDialogDismissed)
-//            }
-        )
+        Dialog(
+            onDismissRequest = {
+                onEvent(UserManagementEvent.OnPrintCouponDialogDismissed)
+            }
+        ) {
+            PrintCouponDialog(
+                state = state.dialogPrintCouponState,
+                onEvent = onEvent,
+                onConfirm = {
+                    onEvent(DialogPrintCouponEvent.OnPrintCouponConfirmed)
+                }
+            )
+        }
+    }
+
+    if (state.isPrintingReminderOpened) {
+        Dialog(
+            onDismissRequest = {}
+        ) {
+            PrintReminder(
+                onConfirmation = {
+                    onEvent(OnPrintingDialogShouldBeDisplayed)
+                }
+            )
+        }
     }
 
     Scaffold(

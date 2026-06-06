@@ -44,8 +44,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.DialogPrintCouponState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponState
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.util.FutureSelectableDate
 import org.lelestacia.qurban_ticketing.util.Hour

@@ -8,8 +8,8 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parameterSetOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
 import org.lelestacia.qurban_ticketing.domain.viewmodel.setting.SettingViewModel
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user_list.UserListViewModel
 import org.lelestacia.qurban_ticketing.ui.MainMenu
 import org.lelestacia.qurban_ticketing.ui.information.InformationScreen
 import org.lelestacia.qurban_ticketing.ui.settings.SettingScreen
@@ -35,7 +35,7 @@ val routeModule = module {
     }
 
     navigation<UserList> {
-        val viewModel = koinViewModel<UserManagementViewModel>()
+        val viewModel = koinViewModel<UserListViewModel>()
         val navigator = koinInject<Navigator>()
         val state by viewModel.state.collectAsStateWithLifecycle()
         UserManagementScreen(

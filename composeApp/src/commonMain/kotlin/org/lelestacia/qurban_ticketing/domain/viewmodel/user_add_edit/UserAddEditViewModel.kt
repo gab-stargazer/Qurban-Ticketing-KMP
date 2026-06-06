@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.domain.viewmodel.member.add
+package org.lelestacia.qurban_ticketing.domain.viewmodel.user_add_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,33 +8,33 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
+import org.lelestacia.qurban_ticketing.domain.state_event.user_add_edit.UserAddEditEvent
+import org.lelestacia.qurban_ticketing.domain.state_event.user_add_edit.UserAddEditState
 import org.lelestacia.qurban_ticketing.util.Navigator
-import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType
-import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.ADD
-import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
+import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class MemberAddEditViewModel(
-    private val screenType: ScreenType,
+class UserAddEditViewModel(
+    private val screenType: UserAddEdit.ScreenType,
     private val initialData: User?,
     private val navigator: Navigator,
     private val repository: UserRepository
 ) : ViewModel() {
 
-    val state: StateFlow<MemberAddEditState>
+    val state: StateFlow<UserAddEditState>
         field = MutableStateFlow(
-            MemberAddEditState(
+            UserAddEditState(
                 screenType = screenType,
                 name = initialData?.name.orEmpty(),
                 address = initialData?.address.orEmpty()
             )
         )
 
-    fun onEvent(event: MemberAddEditEvent) {
+    fun onEvent(event: UserAddEditEvent) {
         when (event) {
-            is MemberAddEditEvent.OnNameChanged -> {
+            is UserAddEditEvent.OnNameChanged -> {
                 state.update {
                     it.copy(
                         name = event.name,
@@ -42,7 +42,7 @@ class MemberAddEditViewModel(
                 }
             }
 
-            is MemberAddEditEvent.OnAddressChanged -> {
+            is UserAddEditEvent.OnAddressChanged -> {
                 state.update {
                     it.copy(
                         address = event.address,
@@ -50,7 +50,7 @@ class MemberAddEditViewModel(
                 }
             }
 
-            is MemberAddEditEvent.OnStatusChanged -> {
+            is UserAddEditEvent.OnStatusChanged -> {
                 state.update {
                     it.copy(
                         status = event.newQurbanStatus
@@ -58,7 +58,7 @@ class MemberAddEditViewModel(
                 }
             }
 
-            is MemberAddEditEvent.OnTypeChanged -> {
+            is UserAddEditEvent.OnTypeChanged -> {
                 state.update {
                     it.copy(
                         type = event.newQurbanType,
@@ -66,10 +66,10 @@ class MemberAddEditViewModel(
                 }
             }
 
-            MemberAddEditEvent.OnAddEditPressed -> {
+            UserAddEditEvent.OnAddEditPressed -> {
                 viewModelScope.launch {
                     when (state.value.screenType) {
-                        ADD -> {
+                        UserAddEdit.ScreenType.ADD -> {
                             repository.insertUser(
                                 User(
                                     id = Uuid.generateV7(),
@@ -81,7 +81,7 @@ class MemberAddEditViewModel(
                             )
                         }
 
-                        EDIT -> {
+                        UserAddEdit.ScreenType.EDIT -> {
                             repository.updateUser(
                                 (initialData ?: return@launch).copy(
                                     name = state.value.name,
@@ -97,11 +97,11 @@ class MemberAddEditViewModel(
                 }
             }
 
-            MemberAddEditEvent.OnBackPressed -> {
+            UserAddEditEvent.OnBackPressed -> {
                 navigator.onBackPressed()
             }
 
-            MemberAddEditEvent.OnDeletePressed -> {
+            UserAddEditEvent.OnDeletePressed -> {
                 viewModelScope.launch {
                     repository.deleteMember(initialData as User)
                     navigator.onBackPressed()

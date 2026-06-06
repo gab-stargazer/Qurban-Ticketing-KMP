@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
+package org.lelestacia.qurban_ticketing.domain.viewmodel.user_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,16 +18,10 @@ import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundSch
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.DialogPermissionEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.FilterEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.ImportDataEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnFabMenuStateClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintCouponDialogDismissed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnSearchQueryChanged
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementEvent.OnUserClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementState
 import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
@@ -36,7 +30,7 @@ import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_location_cannot_be_empty
 import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_start_time_cannot_be_emptu
 
-class UserManagementViewModel(
+class UserListViewModel(
     private val userRepository: UserRepository,
     private val importDataScheduler: BackgroundScheduler,
     private val printCouponScheduler: BackgroundScheduler,
@@ -44,7 +38,6 @@ class UserManagementViewModel(
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
     private val _filterType: MutableStateFlow<FilterType> = MutableStateFlow(FilterType.All)
-
 
     @OptIn(
         FlowPreview::class,
@@ -120,9 +113,9 @@ class UserManagementViewModel(
     fun onEvent(event: UserManagementEvent) {
         when (event) {
 
-            is ImportDataEvent -> {
+            is UserManagementEvent.ImportDataEvent -> {
                 when (event) {
-                    ImportDataEvent.OnClick -> {
+                    UserManagementEvent.ImportDataEvent.OnClick -> {
                         _currentState.update { currentState ->
                             currentState.copy(
                                 isFabMenuExpanded = false,
@@ -131,7 +124,7 @@ class UserManagementViewModel(
                         }
                     }
 
-                    is ImportDataEvent.OnImportData -> {
+                    is UserManagementEvent.ImportDataEvent.OnImportData -> {
                         _currentState.update { currentState ->
                             currentState.copy(
                                 shouldLaunchExcelLauncher = false
@@ -143,9 +136,9 @@ class UserManagementViewModel(
                 }
             }
 
-            is FilterEvent -> {
+            is UserManagementEvent.FilterEvent -> {
                 when (event) {
-                    is FilterEvent.OnClick -> {
+                    is UserManagementEvent.FilterEvent.OnClick -> {
                         _currentState.update { currentState ->
                             currentState.copy(
                                 isFilterMenuOpened = event.newState
@@ -153,7 +146,7 @@ class UserManagementViewModel(
                         }
                     }
 
-                    is FilterEvent.OnValueChanged -> {
+                    is UserManagementEvent.FilterEvent.OnValueChanged -> {
                         _filterType.update { _ ->
                             event.newFilterType
                         }
@@ -167,13 +160,13 @@ class UserManagementViewModel(
                 }
             }
 
-            is DialogPermissionEvent -> {
+            is UserManagementEvent.DialogPermissionEvent -> {
                 when (event) {
-                    DialogPermissionEvent.OnGrantPermission -> {
-                        onEvent(DialogPermissionEvent.OnContinueWithoutPermission)
+                    UserManagementEvent.DialogPermissionEvent.OnGrantPermission -> {
+                        onEvent(UserManagementEvent.DialogPermissionEvent.OnContinueWithoutPermission)
                     }
 
-                    DialogPermissionEvent.OnContinueWithoutPermission -> {
+                    UserManagementEvent.DialogPermissionEvent.OnContinueWithoutPermission -> {
                         viewModelScope.launch {
                             val state = state.value
                             if (state.isNotificationDialogForImportDataOpened) {
@@ -196,7 +189,7 @@ class UserManagementViewModel(
                         }
                     }
 
-                    DialogPermissionEvent.OnDismiss -> {
+                    UserManagementEvent.DialogPermissionEvent.OnDismiss -> {
                         _currentState.update { currentState ->
                             currentState.copy(
                                 isNotificationDialogForImportDataOpened = false,
@@ -207,7 +200,7 @@ class UserManagementViewModel(
                 }
             }
 
-            is OnSearchQueryChanged -> _searchQuery.update {
+            is UserManagementEvent.OnSearchQueryChanged -> _searchQuery.update {
                 event.newSearchQuery
             }
 
@@ -220,14 +213,14 @@ class UserManagementViewModel(
             }
 
             // UI Interaction
-            is OnFabMenuStateClicked -> _currentState.update { currentState ->
+            is UserManagementEvent.OnFabMenuStateClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     isFabMenuExpanded = event.newFabMenuState
                 )
             }
 
 
-            is OnPrintCouponClicked -> _currentState.update { currentState ->
+            is UserManagementEvent.OnPrintCouponClicked -> _currentState.update { currentState ->
                 if (event.isNotificationPermissionNeeded) {
                     currentState.copy(
                         isFabMenuExpanded = false,
@@ -242,13 +235,13 @@ class UserManagementViewModel(
             }
 
             //  Print Coupon Dialog
-            OnPrintingReminderShouldBeDisplayed -> _currentState.update { currentState ->
+            UserManagementEvent.OnPrintingReminderShouldBeDisplayed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingReminderOpened = true
                 )
             }
 
-            OnPrintingDialogShouldBeDisplayed -> _currentState.update { currentState ->
+            UserManagementEvent.OnPrintingDialogShouldBeDisplayed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingReminderOpened = false,
                     isPrintingDialogOpened = true
@@ -291,7 +284,7 @@ class UserManagementViewModel(
                 }
             }
 
-            OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
+            UserManagementEvent.OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingDialogOpened = false,
                     dialogPrintCouponState = DialogPrintCouponState()
@@ -332,7 +325,7 @@ class UserManagementViewModel(
             }
             //  End Dialog Print Coupon
 
-            is OnUserClicked -> _currentState.update { currentState ->
+            is UserManagementEvent.OnUserClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     selectedUserIndex = event.index
                 )

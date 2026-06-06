@@ -1,17 +1,32 @@
 package org.lelestacia.qurban_ticketing.di
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.TrayState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -34,16 +49,22 @@ import org.lelestacia.qurban_ticketing.data.utility.PlatformUtility
 import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.add.MemberAddEditEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.add.MemberAddEditViewModel
-import org.lelestacia.qurban_ticketing.domain.viewmodel.member.list.UserManagementViewModel
+import org.lelestacia.qurban_ticketing.domain.state_event.user_add_edit.UserAddEditEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user_add_edit.UserAddEditViewModel
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user_list.UserListViewModel
 import org.lelestacia.qurban_ticketing.ui.user.management.UserManagementScreen
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.ADD
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType.EDIT
 import org.lelestacia.qurban_ticketing.util.route.UserList
-import qurbanticketing.composeapp.generated.resources.*
+import qurbanticketing.composeapp.generated.resources.Res
+import qurbanticketing.composeapp.generated.resources.btn_add_data
+import qurbanticketing.composeapp.generated.resources.btn_edit_data
+import qurbanticketing.composeapp.generated.resources.label_address
+import qurbanticketing.composeapp.generated.resources.label_name
+import qurbanticketing.composeapp.generated.resources.title_add_data
+import qurbanticketing.composeapp.generated.resources.title_edit_data
 import java.io.File
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -68,6 +89,8 @@ val jvmModule = module {
         binds(listOf(PlatformUtility::class))
     }
 
+    single { TrayState() }
+
     single {
         Navigator(UserList)
     }
@@ -83,7 +106,7 @@ val jvmModule = module {
     }
 
     navigation<UserList> {
-        val vm = koinViewModel<UserManagementViewModel>()
+        val vm = koinViewModel<UserListViewModel>()
         val navigator = koinInject<Navigator>()
         val state by vm.state.collectAsStateWithLifecycle()
         UserManagementScreen(
@@ -94,7 +117,7 @@ val jvmModule = module {
     }
 
     navigation<UserAddEdit> { nav ->
-        val vm = koinViewModel<MemberAddEditViewModel>(
+        val vm = koinViewModel<UserAddEditViewModel>(
             parameters = {
                 parametersOf(
                     nav.screenType,
@@ -131,7 +154,7 @@ val jvmModule = module {
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = {
-                        vm.onEvent(MemberAddEditEvent.OnNameChanged(it))
+                        vm.onEvent(UserAddEditEvent.OnNameChanged(it))
                     },
                     shape = RoundedCornerShape(
                         topStart = 10F,
@@ -160,7 +183,7 @@ val jvmModule = module {
                 OutlinedTextField(
                     value = state.address,
                     onValueChange = {
-                        vm.onEvent(MemberAddEditEvent.OnAddressChanged(it))
+                        vm.onEvent(UserAddEditEvent.OnAddressChanged(it))
                     },
                     shape = RoundedCornerShape(
                         topStart = 10F,
@@ -194,7 +217,7 @@ val jvmModule = module {
                 ) {
                     Button(
                         onClick = {
-                            vm.onEvent(MemberAddEditEvent.OnAddEditPressed)
+                            vm.onEvent(UserAddEditEvent.OnAddEditPressed)
                         },
                         shape =
                             when (state.screenType) {
@@ -227,7 +250,7 @@ val jvmModule = module {
                     if (state.screenType == EDIT) {
                         Button(
                             onClick = {
-                                vm.onEvent(MemberAddEditEvent.OnDeletePressed)
+                                vm.onEvent(UserAddEditEvent.OnDeletePressed)
                             },
                             shape = RoundedCornerShape(
                                 topEnd = 20F,

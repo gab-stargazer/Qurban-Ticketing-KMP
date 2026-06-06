@@ -161,9 +161,10 @@ compose.resources {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
-    add("kspCommonMainMetadata", libs.arrow.optics.compiler)
-    add("kspJvm", libs.androidx.room.compiler)
-    add("kspAndroid", libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+//    add("kspCommonMainMetadata", libs.arrow.optics.compiler)
+//    add("kspJvm", libs.androidx.room.compiler)
+//    add("kspAndroid", libs.androidx.room.compiler)
 }
 
 room {

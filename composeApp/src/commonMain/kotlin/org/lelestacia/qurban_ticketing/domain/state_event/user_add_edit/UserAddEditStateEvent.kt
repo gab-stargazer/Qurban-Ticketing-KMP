@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.domain.viewmodel.member.add
+package org.lelestacia.qurban_ticketing.domain.state_event.user_add_edit
 
 import arrow.optics.optics
 import org.jetbrains.compose.resources.StringResource
@@ -9,7 +9,7 @@ import org.lelestacia.qurban_ticketing.domain.model.Type.Cow
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit.ScreenType
 
 @optics
-data class MemberAddEditState(
+data class UserAddEditState(
     val screenType: ScreenType = ScreenType.ADD,
 
     //  Personal Information
@@ -26,12 +26,12 @@ data class MemberAddEditState(
     companion object
 }
 
-sealed class MemberAddEditEvent {
-    data class OnNameChanged(val name: String) : MemberAddEditEvent()
-    data class OnAddressChanged(val address: String) : MemberAddEditEvent()
-    data class OnStatusChanged(val newQurbanStatus: Status) : MemberAddEditEvent()
-    data class OnTypeChanged(val newQurbanType: Type) : MemberAddEditEvent()
-    data object OnBackPressed : MemberAddEditEvent()
-    data object OnAddEditPressed : MemberAddEditEvent()
-    data object OnDeletePressed : MemberAddEditEvent()
+sealed class UserAddEditEvent {
+    data class OnNameChanged(val name: String) : UserAddEditEvent()
+    data class OnAddressChanged(val address: String) : UserAddEditEvent()
+    data class OnStatusChanged(val newQurbanStatus: Status) : UserAddEditEvent()
+    data class OnTypeChanged(val newQurbanType: Type) : UserAddEditEvent()
+    data object OnBackPressed : UserAddEditEvent()
+    data object OnAddEditPressed : UserAddEditEvent()
+    data object OnDeletePressed : UserAddEditEvent()
 }

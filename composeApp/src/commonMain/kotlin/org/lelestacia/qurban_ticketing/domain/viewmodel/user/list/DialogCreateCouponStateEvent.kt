@@ -1,4 +1,4 @@
-package org.lelestacia.qurban_ticketing.domain.viewmodel.member.list
+package org.lelestacia.qurban_ticketing.domain.viewmodel.user.list
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.CalendarLocale
