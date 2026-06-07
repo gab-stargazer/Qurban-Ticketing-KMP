@@ -4,13 +4,45 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
@@ -28,6 +61,10 @@ import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_back
+import qurbanticketing.composeapp.generated.resources.info_description
+import qurbanticketing.composeapp.generated.resources.info_designer
+import qurbanticketing.composeapp.generated.resources.info_programmer
+import qurbanticketing.composeapp.generated.resources.info_writer
 import qurbanticketing.composeapp.generated.resources.logo_equrban
 import qurbanticketing.composeapp.generated.resources.title_app_name
 
@@ -48,10 +85,46 @@ fun InformationScreen(
         shouldShowBottomSheet = false
     }
 
-    Scaffold (
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+
+                },
+                navigationIcon = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(top = 32.dp, start = 4.dp)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                lifecycle.handleWhenLifecycleResumed(onResumed = onBackPressed)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        Text(
+                            text = stringResource(resource = Res.string.btn_back),
+                            style = MaterialTheme.typography.titleMediumEmphasized.copy(
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        )
+                    }
+                }
+
+            )
+        },
         contentWindowInsets = WindowInsets(),
         modifier = modifier,
-    ) { _ ->
+    ) { padding ->
 
         if (shouldShowBottomSheet) {
             ModalBottomSheet(
@@ -60,7 +133,7 @@ fun InformationScreen(
                 }
             ) {
                 Text(
-                    text = "App Qurban adalah aplikasi yang ditujukan untuk mempermudah Panitia Qurban dalam proses pendataan peserta Qurban. App ini juga dilengkapi dengan fitur Pembuatan Tiket yang bisa diproses batch, mudah dan cepat, serta terdapat fitur Manajemen User yang mempermudah dalam proses pengelolaan data Peserta Qurban seperti mengedit, menambahkan data baru atau mengecek status peserta Qurban dengan mudah dan simpel.",
+                    text = stringResource(Res.string.info_description),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         textAlign = TextAlign.Justify
                     ),
@@ -74,109 +147,218 @@ fun InformationScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterVertically),
             modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = LocalScreenPadding.current.horizontal)
+                .padding(top = LocalScreenPadding.current.vertical)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(top = 32.dp, start = 4.dp)
-            ) {
-                IconButton(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed(onResumed = onBackPressed)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                Text(
-                    text = stringResource(resource = Res.string.btn_back),
-                    style = MaterialTheme.typography.titleMediumEmphasized.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                )
-            }
-
             Image(
                 painter = painterResource(Res.drawable.logo_equrban),
                 contentDescription = null,
-                modifier = Modifier.size(256.dp)
+                modifier = Modifier.size(128.dp)
             )
 
             Text(
                 text = stringResource(Res.string.title_app_name),
-                style = MaterialTheme.typography.titleLargeEmphasized.copy(
+                style = MaterialTheme.typography.titleSmallEmphasized.copy(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
                 )
             )
             Text("v1.0")
 
-            Column(
+            ElevatedCard(
+                modifier = Modifier.padding(top = LocalScreenPadding.current.vertical * 2)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = LocalScreenPadding.current.horizontal,
+                            vertical = LocalScreenPadding.current.vertical
+                        )
+                ) {
+                    AsyncImage(
+                        model = "https://nighturnal.carrd.co/assets/images/image01.png?v=b2782633",
+                        null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .width(75.dp)
+                            .height(75.dp)
+                    )
+
+                    Column(
+                        modifier = Modifier.padding(start = LocalScreenPadding.current.horizontal)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.info_designer),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text("Nighturnal", style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    IconButton(
+                        onClick = {
+                            lifecycle.handleWhenLifecycleResumed {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://nighturnal.carrd.co/".toUri()
+                                )
+                                context.startActivity(intent)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                            contentDescription = null
+                        )
+                    }
+                }
+
+
+            }
+
+            ElevatedCard(
+                modifier = Modifier.padding(top = LocalScreenPadding.current.vertical)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = LocalScreenPadding.current.horizontal,
+                            vertical = LocalScreenPadding.current.vertical
+                        )
+                ) {
+                    AsyncImage(
+                        model = "https://scontent.fplm7-1.fna.fbcdn.net/v/t39.30808-6/676901983_122106858602875201_4778387875524553706_n.jpg?stp=dst-jpg_tt6&cstp=mx717x702&ctp=s717x702&_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHXafsJdgHxfAKOi_x226ky0-8CCLwH0DzT7wIIvAfQPES5-LjlT5lfJt8ALhyjO1nGSVutbEDy0FMJUSFnOHNB&_nc_ohc=f9VW7gPwldgQ7kNvwHse1R2&_nc_oc=AdpjVrTKBWvV_ah1YoU75gUSeZNsx1Clfd2IcJyOnztiaJCUWozRAO7VWa0_XiXv8lw&_nc_zt=23&_nc_ht=scontent.fplm7-1.fna&_nc_gid=-SNZMlLahxbcU3P1mYIVgw&_nc_ss=7b2a8&oh=00_Af889dyCafc3woQh92NTnVpUy8cbpvK5cmLD1SFLMA0nbA&oe=6A2B43A7",
+                        null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .width(75.dp)
+                            .height(75.dp)
+                            .clip(CircleShape)
+                    )
+
+                    Column(
+                        modifier = Modifier.padding(start = LocalScreenPadding.current.horizontal)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.info_programmer),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text("Gabbu", style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    IconButton(
+                        onClick = {
+                            lifecycle.handleWhenLifecycleResumed {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://www.facebook.com/lelestacia/".toUri()
+                                )
+                                context.startActivity(intent)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+
+            ElevatedCard(
+                modifier = Modifier.padding(top = LocalScreenPadding.current.vertical)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = LocalScreenPadding.current.horizontal,
+                            vertical = LocalScreenPadding.current.vertical
+                        )
+                ) {
+                    AsyncImage(
+                        model = "https://avatars.githubusercontent.com/u/88129448?v=4",
+                        null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .width(75.dp)
+                            .height(75.dp)
+                            .clip(CircleShape)
+                    )
+
+                    Column(
+                        modifier = Modifier.padding(start = LocalScreenPadding.current.horizontal)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.info_writer),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text("Shinka", style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    IconButton(
+                        onClick = {
+                            lifecycle.handleWhenLifecycleResumed {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://www.facebook.com/ariel.syafiqri".toUri()
+                                )
+                                context.startActivity(intent)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(LocalScreenPadding.current.horizontal / 2),
                 modifier = Modifier
-                    .fillMaxWidth(0.65F)
                     .padding(top = LocalScreenPadding.current.vertical)
             ) {
-                Button(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            val intent = Intent(
-                                Intent.ACTION_VIEW,
-                                "https://nighturnal.carrd.co/".toUri()
-                            )
-                            context.startActivity(intent)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Desainer")
-                }
-
-                Button(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            val intent = Intent(
-                                Intent.ACTION_VIEW,
-                                "https://www.facebook.com/lelestacia/".toUri()
-                            )
-                            context.startActivity(intent)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Programmer")
-                }
-
-                Button(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed {
-                            val intent = Intent(
-                                Intent.ACTION_VIEW,
-                                "https://www.facebook.com/ariel.syafiqri".toUri()
-                            )
-                            context.startActivity(intent)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Penulis")
-                }
-
                 Button(
                     onClick = {
                         lifecycle.handleWhenLifecycleResumed {
                             shouldShowBottomSheet = true
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(
+                        bottomStart = 25F,
+                        topStart = 25F,
+                        bottomEnd = 10F,
+                        topEnd = 10F
+                    ),
+                    modifier = Modifier.weight(1F)
                 ) {
-                    Text("Tentang Aplikasi")
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null
+                    )
                 }
 
                 Button(
@@ -189,9 +371,15 @@ fun InformationScreen(
                             context.startActivity(intent)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(
+                        bottomEnd = 25F,
+                        topEnd = 25F,
+                        bottomStart = 10F,
+                        topStart = 10F
+                    ),
+                    modifier = Modifier.weight(1F)
                 ) {
-                    Text("Github")
+                    Text("Repositori")
                 }
             }
         }
@@ -209,7 +397,7 @@ private fun PreviewInformationScreen() {
     ) {
         QurbanTicketingTheme {
             InformationScreen(
-               onBackPressed = {}
+                onBackPressed = {}
             )
         }
     }

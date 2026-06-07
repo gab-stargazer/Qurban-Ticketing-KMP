@@ -103,4 +103,10 @@
     <!--Settings-->
     <string name="export_data_label">Ekspor Data Peserta/Penerima</string>
     <string name="export_data_body">Data dari Peserta/Penerima akan diekspor menjadi file Excel yang dapat digunakan untuk melakukan import data dari perangkat lain menggunakan aplikasi ini.</string>
+
+    <!--Information-->
+    <string name="info_designer">Desainer</string>
+    <string name="info_programmer">Programmer</string>
+    <string name="info_writer">Penulis</string>
+    <string name="info_description">App Qurban adalah aplikasi yang ditujukan untuk mempermudah Panitia Qurban dalam proses pendataan peserta Qurban. App ini juga dilengkapi dengan fitur Pembuatan Tiket yang bisa diproses batch, mudah dan cepat, serta terdapat fitur Manajemen User yang mempermudah dalam proses pengelolaan data Peserta Qurban seperti mengedit, menambahkan data baru atau mengecek status peserta Qurban dengan mudah dan simpel.</string>
 </resources>

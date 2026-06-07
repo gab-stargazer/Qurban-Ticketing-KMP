@@ -104,4 +104,10 @@
     <!--Settings-->
     <string name="export_data_label">Export Recipient/Participant Data</string>
     <string name="export_data_body">Data from Participants/Recipients will be exported into an Excel file that can be used to import data from other devices using this application.</string>
+
+    <!--Information-->
+    <string name="info_designer">Designer</string>
+    <string name="info_programmer">Programmer</string>
+    <string name="info_writer">Writer</string>
+    <string name="info_description">Qurban App is an application intended to make it easier for the Qurban Committee in the process of collecting Qurban participant data. This app is also equipped with a Ticket Creation feature that can be processed in batches, easily and quickly, and there is a User Management feature that makes it easy to manage Qurban Participant data such as editing, adding new data, or checking the status of Qurban participants easily and simply.</string>
 </resources>
