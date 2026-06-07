@@ -49,3 +49,5 @@ fun User.toEntity(): UserEntity =
         status = status,
         type = type,
     )
+
+fun UserEntity.isParticipant(): Boolean = this.status == Status.Participant

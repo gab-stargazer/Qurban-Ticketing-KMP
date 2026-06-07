@@ -64,7 +64,6 @@ kotlin {
         implementation("com.google.accompanist:accompanist-permissions:0.37.3")
 
         //  Koin
-        implementation(project.dependencies.platform(libs.koin.bom))
         implementation(libs.koin.android)
         implementation(libs.koin.androidx.compose)
         implementation(libs.koin.workmanager)
@@ -81,33 +80,6 @@ kotlin {
         implementation(libs.androidx.lifecycle.runtimeCompose)
         implementation(libs.material.icons.extended)
 
-        //  Arrow
-        implementation(project.dependencies.platform(libs.arrow.bom))
-        implementation(libs.arrow.core)
-        implementation(libs.arrow.fx.coroutines)
-        implementation(libs.arrow.optics)
-
-        //  Filekit
-        implementation(libs.filekit.dialogs)
-        implementation(libs.filekit.dialogs.compose)
-
-        //  Koin
-        implementation(libs.koin.core)
-        implementation(libs.koin.compose)
-        implementation(libs.koin.compose.viewmodel)
-        implementation(libs.koin.navigation3)
-
-        //  Lifecycle
-        implementation(libs.jetbrains.material3.adaptiveNavigation3)
-        implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
-
-        //  Navigation
-        implementation(libs.jetbrains.navigation3.ui)
-
-        //  Paging
-        implementation(libs.paging)
-        implementation(libs.paging.compose)
-
         //  Room
         implementation(libs.androidx.room.runtime)
         implementation(libs.androidx.sqlite.bundled)
@@ -115,9 +87,6 @@ kotlin {
 
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
         implementation(libs.kotlinx.datetime)
-
-        //  Kermit
-        implementation(libs.kermit)
 
         //  KmpFile
         implementation("dev.zwander:kmpfile:0.8.0")

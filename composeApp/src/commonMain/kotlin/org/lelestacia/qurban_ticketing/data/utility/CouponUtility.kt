@@ -219,7 +219,7 @@ class CouponUtility(
         val name: String,
         val address: String,
         val status: Status,
-        val type: Type
+        val type: Type?
     )
 
     companion object {

@@ -29,6 +29,7 @@
     <string name="label_qurban_type">Jenis Qurban</string>
     <string name="label_filter">Filter</string>
     <string name="label_not_selected">Belum dipilih</string>
+    <string name="label_preferred_language">Bahasa Pilihan</string>
 
     <!--Title-->
     <string name="title_add_data">Tambahkan Peserta/Penerima</string>
@@ -52,6 +53,7 @@
     <string name="btn_show_app_information">Informasi\nAplikasi</string>
     <string name="btn_show_user_management">Manajemen\nUser</string>
     <string name="btn_understand">Mengerti</string>
+    <string name="btn_export_data">Ekspor Data</string>
 
     <!--Filter-->
     <string name="filter_type_all">Semua</string>
@@ -92,8 +94,13 @@
     <string name="notification_title_process_failed">Proses Gagal</string>
     <string name="notification_body_import_data">Impor data selesai dengan total %1$s data</string>
     <string name="notification_body_save_coupon">Kupon berhasil disimpan pada folder Dokumen</string>
+    <string name="notification_body_export_data">Excel berhasil disimpan pada folder Dokumen</string>
 
     <!--Language-->
     <string name="lang_id">Indonesia</string>
     <string name="lang_en">Inggris (US)</string>
+
+    <!--Settings-->
+    <string name="export_data_label">Ekspor Data Peserta/Penerima</string>
+    <string name="export_data_body">Data dari Peserta/Penerima akan diekspor menjadi file Excel yang dapat digunakan untuk melakukan import data dari perangkat lain menggunakan aplikasi ini.</string>
 </resources>

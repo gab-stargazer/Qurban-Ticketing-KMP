@@ -35,4 +35,25 @@ class PlatformUtilityImpl(
             file?.openOutputStream()?.asOutputStream()
         }
     }
+
+    override fun createExcelGetOS(documentName: String): OutputStream? {
+        return if (Build.VERSION.SDK_INT >= 29) {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, documentName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Documents/")
+            }
+
+            val uri = context.contentResolver.insert(MediaStore.Files.getContentUri("external"), values)
+            context.contentResolver.openOutputStream(
+                uri ?: throw IOException("Failed to create Coupon"), "rw"
+            )
+        } else {
+            val file = FileUtils.fromString(
+                input = "${getDocumentDirectory()}/$documentName.xlsx", isDirectory = false
+            )
+
+            file?.openOutputStream()?.asOutputStream()
+        }
+    }
 }

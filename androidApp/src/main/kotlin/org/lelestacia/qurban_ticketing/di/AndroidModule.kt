@@ -13,6 +13,7 @@ import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import org.lelestacia.qurban_ticketing.Constant.EXPORT_DATA_SCHEDULER
 import org.lelestacia.qurban_ticketing.Constant.IMPORT_DATA_SCHEDULER
 import org.lelestacia.qurban_ticketing.Constant.PRINT_COUPON_SCHEDULER
 import org.lelestacia.qurban_ticketing.data.ImportDataWorker
@@ -24,6 +25,7 @@ import org.lelestacia.qurban_ticketing.data.db.createDataStore
 import org.lelestacia.qurban_ticketing.data.db.dataStoreFileName
 import org.lelestacia.qurban_ticketing.data.repository.SettingRepositoryImpl
 import org.lelestacia.qurban_ticketing.data.utility.PlatformUtility
+import org.lelestacia.qurban_ticketing.domain.ExportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.ImportDataScheduler
 import org.lelestacia.qurban_ticketing.domain.PrintCouponScheduler
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
@@ -57,6 +59,11 @@ val androidModule = module {
 
     factoryOf(::PrintCouponScheduler) {
         named(PRINT_COUPON_SCHEDULER)
+        binds(listOf(BackgroundScheduler::class))
+    }
+
+    factoryOf(::ExportDataScheduler) {
+        named(EXPORT_DATA_SCHEDULER)
         binds(listOf(BackgroundScheduler::class))
     }
 

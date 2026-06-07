@@ -24,4 +24,21 @@ class PlatformUtilityImpl : PlatformUtility {
 
         return platformFile?.openOutputStream()?.asOutputStream()
     }
+
+    override fun createExcelGetOS(documentName: String): OutputStream? {
+        var platformFile = FileUtils.fromString(
+            input = "${getDocumentDirectory()}/$documentName.xlsx",
+            isDirectory = false
+        )
+
+        if (platformFile?.getExists() ?: false) {
+            platformFile.delete()
+            platformFile = FileUtils.fromString(
+                input = "${getDocumentDirectory()}/$documentName.xlsx",
+                isDirectory = false
+            )
+        }
+
+        return platformFile?.openOutputStream()?.asOutputStream()
+    }
 }

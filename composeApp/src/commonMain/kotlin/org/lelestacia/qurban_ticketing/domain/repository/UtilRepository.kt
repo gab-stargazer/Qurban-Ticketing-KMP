@@ -7,6 +7,7 @@ import org.lelestacia.qurban_ticketing.util.PickupDate
 
 interface UtilRepository {
     suspend fun importUsersFromExcel(uri: String): Int
+    suspend fun exportUser()
     suspend fun printCoupons(
         qurbanLocation: Location,
         qurbanPickupDate: PickupDate,

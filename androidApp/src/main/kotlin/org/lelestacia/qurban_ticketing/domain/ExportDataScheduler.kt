@@ -1,26 +1,20 @@
 package org.lelestacia.qurban_ticketing.domain
 
 import android.content.Context
-import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import co.touchlab.kermit.Logger
-import org.lelestacia.qurban_ticketing.data.ImportDataWorker
+import org.lelestacia.qurban_ticketing.data.ExportDataWorker
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 
-class ImportDataScheduler(
+class ExportDataScheduler(
     private val context: Context
 ) : BackgroundScheduler {
 
     override fun execute(vararg input: Any) {
-        Logger.d("Import Data Scheduler Called")
+        Logger.d("Export Data Scheduler Called")
 
-        val workRequest = OneTimeWorkRequestBuilder<ImportDataWorker>()
-            .setInputData(
-                Data.Builder()
-                    .putString(ImportDataWorker.INPUT_DATA_URL, input[0] as String)
-                    .build()
-            )
+        val workRequest = OneTimeWorkRequestBuilder<ExportDataWorker>()
             .build()
 
         WorkManager.getInstance(context)

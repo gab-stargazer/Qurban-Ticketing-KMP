@@ -10,15 +10,18 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,12 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent
+import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent.OnExportDataClicked
 import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingState
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.dropdown.Language
@@ -47,6 +52,10 @@ import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_back_setting
+import qurbanticketing.composeapp.generated.resources.btn_export_data
+import qurbanticketing.composeapp.generated.resources.export_data_body
+import qurbanticketing.composeapp.generated.resources.export_data_label
+import qurbanticketing.composeapp.generated.resources.label_preferred_language
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -115,7 +124,7 @@ fun SettingScreen(
                     onValueChange = {},
                     label = {
                         Text(
-                            "Bahasa Pilihan",
+                            stringResource(Res.string.label_preferred_language),
                             style = MaterialTheme.typography.labelMediumEmphasized
                         )
                     },
@@ -157,6 +166,47 @@ fun SettingScreen(
                             }
                         )
                     }
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = LocalScreenPadding.current.horizontal)
+                    .padding(top = LocalScreenPadding.current.vertical)
+            ) {
+                Text(
+                    stringResource(Res.string.export_data_label),
+                    style = MaterialTheme.typography.labelMediumEmphasized,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+
+                Text(
+                    text = stringResource(Res.string.export_data_body),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        textAlign = TextAlign.Justify
+                    ),
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        vertical = LocalScreenPadding.current.vertical - 4.dp,
+                        horizontal = LocalScreenPadding.current.horizontal
+                    )
+                )
+
+                OutlinedButton(
+                    onClick = {
+                        onEvent(OnExportDataClicked)
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurface.copy(0.9F)
+                    ),
+                    shape = RoundedCornerShape(25F),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(Res.string.btn_export_data))
                 }
             }
         }

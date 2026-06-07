@@ -49,44 +49,48 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.material.icons.extended)
 
+            //  Apache POI
+            implementation("org.apache.poi:poi:5.5.1")
+            implementation("org.apache.poi:poi-ooxml:5.5.1")
+
             //  Arrow
-            implementation(project.dependencies.platform(libs.arrow.bom))
-            implementation(libs.arrow.core)
-            implementation(libs.arrow.fx.coroutines)
-            implementation(libs.arrow.optics)
+            api(project.dependencies.platform(libs.arrow.bom))
+            api(libs.arrow.core)
+            api(libs.arrow.fx.coroutines)
+            api(libs.arrow.optics)
 
             //  Filekit
-            implementation(libs.filekit.dialogs)
-            implementation(libs.filekit.dialogs.compose)
+            api(libs.filekit.dialogs)
+            api(libs.filekit.dialogs.compose)
 
             //  Koin
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.navigation3)
+            api(project.dependencies.platform(libs.koin.bom))
+            api(libs.koin.core)
+            api(libs.koin.compose)
+            api(libs.koin.compose.viewmodel)
+            api(libs.koin.navigation3)
 
             //  Lifecycle
-            implementation(libs.jetbrains.material3.adaptiveNavigation3)
-            implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
+            api(libs.jetbrains.material3.adaptiveNavigation3)
+            api(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
             //  Navigation
-            implementation(libs.jetbrains.navigation3.ui)
+            api(libs.jetbrains.navigation3.ui)
 
             //  Paging
-            implementation(libs.paging)
-            implementation(libs.paging.compose)
+            api(libs.paging)
+            api(libs.paging.compose)
 
             //  Room
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.androidx.room.paging)
 
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
             implementation(libs.kotlinx.datetime)
 
             //  Kermit
-            implementation(libs.kermit)
+            api(libs.kermit)
 
             //  Retable
             implementation(libs.retable)
@@ -161,7 +165,9 @@ compose.resources {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
-    ksp(libs.androidx.room.compiler)
+    kspCommonMainMetadata(libs.androidx.room.compiler)
+    kspCommonMainMetadata(libs.arrow.optics.compiler)
+
 //    add("kspCommonMainMetadata", libs.arrow.optics.compiler)
 //    add("kspJvm", libs.androidx.room.compiler)
 //    add("kspAndroid", libs.androidx.room.compiler)

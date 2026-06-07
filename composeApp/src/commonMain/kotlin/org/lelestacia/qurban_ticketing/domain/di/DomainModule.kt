@@ -5,6 +5,9 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.lelestacia.qurban_ticketing.Constant.EXPORT_DATA_SCHEDULER
+import org.lelestacia.qurban_ticketing.Constant.IMPORT_DATA_SCHEDULER
+import org.lelestacia.qurban_ticketing.Constant.PRINT_COUPON_SCHEDULER
 import org.lelestacia.qurban_ticketing.domain.viewmodel.MemberListViewModel
 import org.lelestacia.qurban_ticketing.domain.viewmodel.setting.SettingViewModel
 import org.lelestacia.qurban_ticketing.domain.viewmodel.user_add_edit.UserAddEditViewModel
@@ -25,13 +28,19 @@ val domainModule = module {
     }
 
     viewModelOf(::UserAddEditViewmodel)
+
     viewModel {
         UserListViewModel(
             userRepository = get(),
-            importDataScheduler = get(qualifier = named(name = "Import Data Scheduler")),
-            printCouponScheduler = get(qualifier = named(name = "Print Coupon Scheduler")),
+            importDataScheduler = get(qualifier = named(name = IMPORT_DATA_SCHEDULER)),
+            printCouponScheduler = get(qualifier = named(name = PRINT_COUPON_SCHEDULER)),
         )
     }
 
-    viewModelOf(::SettingViewModel)
+    viewModel {
+        SettingViewModel(
+            settingRepository = get(),
+            exportDataScheduler = get(qualifier = named(name = EXPORT_DATA_SCHEDULER))
+        )
+    }
 }

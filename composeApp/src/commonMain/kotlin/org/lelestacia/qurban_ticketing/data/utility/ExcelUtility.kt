@@ -5,56 +5,100 @@ import dev.zwander.kotlin.file.IPlatformFile
 import io.retable.Retable
 import kotlinx.io.IOException
 import kotlinx.io.asInputStream
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.jetbrains.compose.resources.getString
 import org.lelestacia.qurban_ticketing.data.entity.UserEntity
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class ExcelUtility {
+class ExcelUtility(
+    private val platformUtility: PlatformUtility
+) {
 
-//    fun exportMemberToExcel(member: List<MemberEntity>) {
-//        val documentsDir = Environment
-//            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-//        val file = File(documentsDir, "daftar-qurban.xlsx")
-//        val columns = object : RetableColumns() {
-//            val id = string(ID)
-//            val name = string(NAME)
-//            val address = string(ADDRESS)
-//            val phone = string(PHONE)
-//            val status = string(STATUS)
-//            val type = string(TYPE)
-//        }
+    suspend fun exportUsersToExcel(users: List<UserEntity>) {
+        val os = platformUtility.createExcelGetOS("Data Aplikasi") ?: return
 
-//        TODO: Require further investigation regarding APACHE POI capabilities not being able to export into Excel
-//
-//        Retable(columns)
-//            .data(
-//                values = member
-//            ) {
-//
-//                mapOf(
-//                    id to it.id,
-//                    name to it.name,
-//                    address to it.address,
-//                    rt to it.rt,
-//                    rw to it.rw,
-//                    phone to it.phone.orEmpty(),
-//                    status to if (it.isParticipant) "Peserta" else "Penerima",
-//                    type to if (it.isParticipant) {
-//                        if (it.isCow == true) {
-//                            "Sapi"
-//                        } else {
-//                            "Kambing"
-//                        }
-//                    } else ""
-//                )
-//            }
-//            .write(Retable.excel(columns) to file.outputStream())
-//    }
+        val statusParticipant = getString(Status.Participant.uiText)
+        val statusRecipient = getString(Status.Recipient.uiText)
+
+
+        val groupedUsers = users.groupBy { it.status }.apply {
+            forEach { (_, entities) ->
+                entities.sortedBy { it.name }
+            }
+        }
+
+        XSSFWorkbook().use { workbook ->
+            val font = workbook.createFont().apply {
+                fontName = "Times New Roman"
+                fontHeightInPoints = 12
+            }
+
+            val cellStyle = workbook.createCellStyle().apply {
+                setFont(font)
+            }
+
+            val sheet = workbook.createSheet()
+            val headers = listOf(NAME, ADDRESS, STATUS, TYPE)
+            val headerRow = sheet.createRow(0)
+            headers.forEachIndexed { index, string ->
+                headerRow.createCell(index).apply {
+                    setCellValue(string)
+                    this.cellStyle = cellStyle
+                }
+            }
+
+            val colWidths = IntArray(headers.size) { headers[it].length }
+
+            groupedUsers.flatMap { it.value }.forEachIndexed { index, entity ->
+                val row = sheet.createRow(index + 1)
+                row.createCell(0).apply {
+                    setCellValue(entity.name)
+                    this.cellStyle = cellStyle
+                }
+                row.createCell(1).apply {
+                    setCellValue(entity.address.orEmpty())
+                    this.cellStyle = cellStyle
+                }
+                row.createCell(2).apply {
+                    setCellValue(
+                        when(entity.status) {
+                            Status.Recipient -> statusRecipient
+                            Status.Participant -> statusParticipant
+                        }
+                    )
+                    this.cellStyle = cellStyle
+                }
+                row.createCell(3).apply {
+                    setCellValue(
+                        when(entity.type) {
+                            Type.Cow -> "Sapi"
+                            Type.Goat -> "Kambing"
+                            Type.Sheep -> "Domba"
+                            null -> ""
+                        }
+                    )
+                    this.cellStyle = cellStyle
+                }
+            }
+
+            colWidths.forEachIndexed { index, width ->
+                if (index == 0) {
+                    sheet.setColumnWidth(index, (width + 30) * 256)
+                } else{
+                    sheet.setColumnWidth(index, (width + 4) * 256)
+                }
+            }
+
+
+            workbook.write(os)
+        }
+    }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun importMemberFromExcel(uri: String): List<UserEntity> {
+    fun importUsersFromExcel(uri: String): List<UserEntity> {
 
         val entities = mutableListOf<UserEntity>()
         val file: IPlatformFile? = FileUtils.fromString(
@@ -85,12 +129,14 @@ class ExcelUtility {
                                     COW -> Type.Cow
                                     GOAT -> Type.Goat
                                     SHEEP -> Type.Sheep
-                                    else -> Type.Cow
+                                    else -> null
                                 }
                         )
                     }.toList()
                 )
             }
+
+            fis.close()
         }
 
         return entities
@@ -105,5 +151,6 @@ class ExcelUtility {
         private const val GOAT = "Kambing"
         private const val SHEEP = "Domba"
         private const val PESERTA = "Peserta"
+        private const val PENERIMA = "Penerima"
     }
 }

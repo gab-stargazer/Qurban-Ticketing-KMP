@@ -16,9 +16,14 @@ class UtilRepositoryImpl(
     private val couponUtility: CouponUtility,
 ) : UtilRepository {
     override suspend fun importUsersFromExcel(uri: String): Int {
-        val users = excelUtility.importMemberFromExcel(uri)
+        val users = excelUtility.importUsersFromExcel(uri)
         userDao.inserts(users)
         return users.size
+    }
+
+    override suspend fun exportUser() {
+        val users = userDao.getAllUserData("")
+        excelUtility.exportUsersToExcel(users)
     }
 
     override suspend fun printCoupons(

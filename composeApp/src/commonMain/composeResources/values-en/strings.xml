@@ -17,6 +17,7 @@
     <string name="label_qurban_type">Qurban Type</string>
     <string name="label_filter">Filter</string>
     <string name="label_not_selected">Not Selected</string>
+    <string name="label_preferred_language">Bahasa Pilihan</string>
 
     <!--Title-->
     <string name="title_add_data">Add Participant/Recipient</string>
@@ -40,6 +41,7 @@
     <string name="btn_show_app_information">Application\nInformation</string>
     <string name="btn_show_user_management">User\nManagement</string>
     <string name="btn_understand">Understand</string>
+    <string name="btn_export_data">Export Data</string>
 
     <!--Text-->
     <string name="tv_main_menu">Main Menu</string>
@@ -93,8 +95,13 @@
     <string name="notification_title_process_failed">Process Failed</string>
     <string name="notification_body_import_data">Import data finished with %1$s data</string>
     <string name="notification_body_save_coupon">Coupon saved at Documents Folder</string>
+    <string name="notification_body_export_data">Excel saved at Documents Folder</string>
 
     <!--Language-->
     <string name="lang_id">Indonesian</string>
     <string name="lang_en">English (US)</string>
+
+    <!--Settings-->
+    <string name="export_data_label">Export Recipient/Participant Data</string>
+    <string name="export_data_body">Data from Participants/Recipients will be exported into an Excel file that can be used to import data from other devices using this application.</string>
 </resources>

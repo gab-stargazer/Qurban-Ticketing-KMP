@@ -5,18 +5,18 @@ android-minSdk = "26"
 android-targetSdk = "37"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
-androidx-core = "1.18.0"
+androidx-core = "1.19.0"
 androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.10.0"
 androidx-testExt = "1.3.0"
 composeHotReload = "1.1.1"
-composeMultiplatform = "1.11.0"
+composeMultiplatform = "1.11.1"
 junit = "4.13.2"
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 material3 = "1.10.0-alpha05"
 
 #   Arrow
-arrow = "2.2.2.1"
+arrow = "2.2.3"
 
 #   Filekit
 filekit = "0.14.1"
@@ -60,6 +60,9 @@ material = "1.14.0"
 
 [libraries]
 
+#   Apache POI
+apache-poi = { module = "org.apache.poi:poi", version = "5.5.1" }
+
 #   Arrow
 arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
 arrow-core = { module = "io.arrow-kt:arrow-core" }
@@ -75,7 +78,7 @@ filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose
 itext = { module = "com.itextpdf:itext7-core", version = "9.6.0" }
 
 #   Kermit
-kermit = {module="co.touchlab:kermit", version = "2.0.8"}
+kermit = { module = "co.touchlab:kermit", version = "2.1.0" }
 
 #   Koog
 koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }

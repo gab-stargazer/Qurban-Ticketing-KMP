@@ -5,4 +5,6 @@ import java.io.OutputStream
 interface PlatformUtility {
 
     fun createQurbanTicketAndGetOS(documentName: String): OutputStream?
+
+    fun createExcelGetOS(documentName: String): OutputStream?
 }
