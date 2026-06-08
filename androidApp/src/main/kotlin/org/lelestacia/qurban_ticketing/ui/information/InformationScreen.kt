@@ -1,6 +1,7 @@
 package org.lelestacia.qurban_ticketing.ui.information
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -35,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,12 +46,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import coil3.compose.AsyncImage
@@ -75,6 +79,18 @@ fun InformationScreen(
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val view = LocalView.current
+    DisposableEffect(Unit) {
+        val window = (view.context as Activity).window
+        WindowCompat.getInsetsController(window, view)
+            .isAppearanceLightStatusBars = true
+
+        onDispose {
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = false
+        }
+    }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle by lifecycleOwner.lifecycle.currentStateAsState()
     val context = LocalContext.current

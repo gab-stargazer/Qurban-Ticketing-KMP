@@ -33,6 +33,7 @@ import org.lelestacia.qurban_ticketing.domain.repository.SettingRepository
 import org.lelestacia.qurban_ticketing.ui.user.add_edit.UserAddEditViewmodel
 import org.lelestacia.qurban_ticketing.util.Navigator
 import org.lelestacia.qurban_ticketing.util.route.Dashboard
+import org.lelestacia.qurban_ticketing.util.FileStorage as QurbanFileStorage
 
 val androidModule = module {
     single {
@@ -51,6 +52,8 @@ val androidModule = module {
     singleOf(::PlatformUtilityImpl) {
         binds(listOf(PlatformUtility::class))
     }
+
+    singleOf(::QurbanFileStorage)
 
     factoryOf(::ImportDataScheduler) {
         named(IMPORT_DATA_SCHEDULER)

@@ -54,7 +54,7 @@ fun ExportImport(
         HorizontalDivider(
             modifier = Modifier.padding(
                 vertical = LocalScreenPadding.current.vertical - 4.dp,
-                horizontal = LocalScreenPadding.current.horizontal
+                horizontal = LocalScreenPadding.current.horizontal - 4.dp
             )
         )
 

@@ -16,11 +16,16 @@ import com.itextpdf.layout.element.Text
 import com.itextpdf.layout.properties.AreaBreakType
 import com.itextpdf.layout.properties.HorizontalAlignment
 import com.itextpdf.layout.properties.VerticalAlignment
+import dev.zwander.kotlin.file.FileUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.io.readByteArray
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.getDrawableResourceBytes
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
+import org.lelestacia.qurban_ticketing.data.db.AppSettings
 import org.lelestacia.qurban_ticketing.domain.model.Status
 import org.lelestacia.qurban_ticketing.domain.model.Type
 import org.lelestacia.qurban_ticketing.util.Hour
@@ -43,26 +48,39 @@ import java.time.temporal.ChronoField
 
 
 class CouponUtility(
-    private val platformUtility: PlatformUtility
+    private val platformUtility: PlatformUtility,
+    private val settings: AppSettings
 ) {
 
-    private lateinit var couponParticipant: ImageData
     private lateinit var couponRecipient: ImageData
+    private lateinit var couponParticipant: ImageData
 
     private suspend fun loadBackgroundImage() {
-        couponParticipant = ImageDataFactory.create(
-            getDrawableResourceBytes(
-                getSystemResourceEnvironment(),
-                Res.drawable.coupon_participant
-            )
+        couponRecipient = loadImageOrDefault(
+            customPath = settings.readRecipientCoupon().first(),
+            defaultDrawable = Res.drawable.coupon_recipient
         )
 
-        couponRecipient = ImageDataFactory.create(
-            getDrawableResourceBytes(
-                getSystemResourceEnvironment(),
-                Res.drawable.coupon_recipient
-            )
+        couponParticipant = loadImageOrDefault(
+            customPath = settings.readParticipantCoupon().first(),
+            defaultDrawable = Res.drawable.coupon_participant
         )
+    }
+
+    private suspend fun loadImageOrDefault(
+        customPath: String,
+        defaultDrawable: DrawableResource
+    ): ImageData {
+        val bytes = customPath
+            .takeIf { it.isNotBlank() }
+            ?.let { FileUtils.fromString(input = it, isDirectory = false) }
+            ?.openInputStream()
+            ?.use { it.readByteArray() }
+
+        return ImageDataFactory
+            .create(
+                bytes ?: getDrawableResourceBytes(getSystemResourceEnvironment(), defaultDrawable)
+            )
     }
 
     suspend fun saveCoupons(

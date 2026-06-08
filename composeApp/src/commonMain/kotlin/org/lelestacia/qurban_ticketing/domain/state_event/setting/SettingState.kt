@@ -4,6 +4,10 @@ import org.lelestacia.qurban_ticketing.ui.dropdown.Language
 
 data class SettingState(
     val preferredLanguage: Language = Language.ID,
+    val recipientCustomCoupon: String = "",
+    val participantCustomCoupon: String = "",
+
+    //  Permission
     val isPermissionShownForExport: Boolean = false,
     val isPermissionShownForImport: Boolean = false,
 )

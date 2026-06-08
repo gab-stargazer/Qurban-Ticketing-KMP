@@ -42,6 +42,8 @@
     <string name="btn_understand">Understand</string>
     <string name="btn_export_data">Export Data</string>
     <string name="btn_import_data">Import Data</string>
+    <string name="btn_recipient">Recipient</string>
+    <string name="btn_participant">Participant</string>
 
     <!--Text-->
     <string name="tv_main_menu">Main Menu</string>
@@ -106,6 +108,9 @@
     <string name="export_data_body">Data from Recipient/Participant will be exported into an Excel file that can be used to import data from other devices using this application.</string>
     <string name="import_data_label">Import Recipient/Participant Data</string>
     <string name="import_data_body">Import Recipient/Participant data from an Excel file.</string>
+    <string name="custom_image_label">Custom Image</string>
+    <string name="custom_image_body">Custom Image for Recipient/Participant coupons. Images should have a 1:3 ratio with good black text visibility. Click one of the buttons below to change the background image for that coupon type. When the button changes to a pencil icon, it can be used to change the image again. Use the delete icon button to reset the image to default.</string>
+
 
     <!--Information-->
     <string name="info_designer">Designer</string>

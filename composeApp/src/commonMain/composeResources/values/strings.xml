@@ -54,6 +54,8 @@
     <string name="btn_understand">Mengerti</string>
     <string name="btn_export_data">Ekspor Data</string>
     <string name="btn_import_data">Impor Data</string>
+    <string name="btn_recipient">Penerima</string>
+    <string name="btn_participant">Peserta</string>
 
     <!--Filter-->
     <string name="filter_type_all">Semua</string>
@@ -105,6 +107,8 @@
     <string name="export_data_body">Data dari Penerima/Peserta akan diekspor menjadi file Excel yang dapat digunakan untuk melakukan import data dari perangkat lain menggunakan aplikasi ini.</string>
     <string name="import_data_label">Impor Data Penerima/Peserta</string>
     <string name="import_data_body">Impor data Penerima/Peserta dari file Excel.</string>
+    <string name="custom_image_label">Gambar Kustom</string>
+    <string name="custom_image_body">Gambar Kustom untuk kupon Penerima/Peserta. Gambar sebaiknya memiliki rasio 1:3 dengan visibilitas teks warna hitam yang baik. Klik salah satu tombol dibawah sesuai dengan tulisan untuk mengganti gambar latar kupon jenis tersebut. Ketika tombol berubah menjadi ikon pensil, tombol tersebut dapat digunakan untuk mengubah kembali. Gunakan tombol ikon hapus untuk mengembalikan gambar seperti semula</string>
 
     <!--Information-->
     <string name="info_designer">Desainer</string>
