@@ -16,18 +16,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.path
 import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.FilterEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.ImportDataEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnFabMenuStateClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintingReminderShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnSearchQueryChanged
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnPrintingDialogShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnPrintingReminderShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnSearchQueryChanged
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListState
 import org.lelestacia.qurban_ticketing.ui.component.PrintCouponDialog
 import org.lelestacia.qurban_ticketing.ui.component.PrintReminder
 import org.lelestacia.qurban_ticketing.util.route.UserAddEdit
@@ -41,23 +37,17 @@ import kotlin.uuid.ExperimentalUuidApi
 )
 @Composable
 fun UserManagementScreen(
-    state: UserManagementState,
-    onEvent: (UserManagementEvent) -> Unit,
+    state: UserListState,
+    onEvent: (UserListEvent) -> Unit,
     onNavigateTo: (Any) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val users = state.users.collectAsLazyPagingItems()
 
-    val launcher = rememberFilePickerLauncher(
-        type = FileKitType.File("xlsx")
-    ) { file ->
-        onEvent(ImportDataEvent.OnImportData(stringUri = file?.path ?: return@rememberFilePickerLauncher))
-    }
-
     if (state.isPrintingDialogOpened) {
         Dialog(
             onDismissRequest = {
-                onEvent(UserManagementEvent.OnPrintCouponDialogDismissed)
+                onEvent(UserListEvent.OnPrintCouponDialogDismissed)
             }
         ) {
             PrintCouponDialog(
@@ -89,10 +79,6 @@ fun UserManagementScreen(
                 isFabExpanded = state.isFabMenuExpanded,
                 onFabStateChange = { newFabMenuState ->
                     onEvent(OnFabMenuStateClicked(newFabMenuState))
-                },
-                onImportData = {
-                    onEvent(OnFabMenuStateClicked(newFabMenuState = false))
-                    launcher.launch()
                 },
                 onAddData = {
                     onEvent(OnFabMenuStateClicked(newFabMenuState = false))

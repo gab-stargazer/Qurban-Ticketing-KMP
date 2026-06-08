@@ -35,13 +35,13 @@
     <string name="btn_edit_data">Edit Data</string>
     <string name="btn_delete_data">Delete Data</string>
     <string name="btn_grant_permission">Grant Permission</string>
-    <string name="btn_import_data">Import Participant/Recipient Data</string>
     <string name="btn_print_coupon">Print Coupon</string>
     <string name="btn_select">Select</string>
     <string name="btn_show_app_information">Application\nInformation</string>
     <string name="btn_show_user_management">User\nManagement</string>
     <string name="btn_understand">Understand</string>
     <string name="btn_export_data">Export Data</string>
+    <string name="btn_import_data">Import Data</string>
 
     <!--Text-->
     <string name="tv_main_menu">Main Menu</string>
@@ -103,7 +103,9 @@
 
     <!--Settings-->
     <string name="export_data_label">Export Recipient/Participant Data</string>
-    <string name="export_data_body">Data from Participants/Recipients will be exported into an Excel file that can be used to import data from other devices using this application.</string>
+    <string name="export_data_body">Data from Recipient/Participant will be exported into an Excel file that can be used to import data from other devices using this application.</string>
+    <string name="import_data_label">Import Recipient/Participant Data</string>
+    <string name="import_data_body">Import Recipient/Participant data from an Excel file.</string>
 
     <!--Information-->
     <string name="info_designer">Designer</string>

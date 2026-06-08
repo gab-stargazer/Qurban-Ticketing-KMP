@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.lelestacia.qurban_ticketing.domain.background_scheduler.BackgroundScheduler
 import org.lelestacia.qurban_ticketing.domain.model.Status
@@ -20,8 +19,8 @@ import org.lelestacia.qurban_ticketing.domain.model.User
 import org.lelestacia.qurban_ticketing.domain.repository.UserRepository
 import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
 import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponState
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListState
 import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType
 import org.lelestacia.qurban_ticketing.util.toFormattedDate
 import qurbanticketing.composeapp.generated.resources.Res
@@ -32,7 +31,6 @@ import qurbanticketing.composeapp.generated.resources.dialog_print_coupon_error_
 
 class UserListViewModel(
     private val userRepository: UserRepository,
-    private val importDataScheduler: BackgroundScheduler,
     private val printCouponScheduler: BackgroundScheduler,
 ) : ViewModel() {
 
@@ -71,15 +69,15 @@ class UserListViewModel(
         }
     }
 
-    private val _currentState: MutableStateFlow<UserManagementState> =
-        MutableStateFlow(UserManagementState())
+    private val _currentState: MutableStateFlow<UserListState> =
+        MutableStateFlow(UserListState())
 
     val state = combine(
         flow = _searchQuery,
         flow2 = _filterType,
         flow3 = _currentState,
     ) { searchQuery, filterType, state ->
-        UserManagementState(
+        UserListState(
             // Search and Filter
             searchQuery = searchQuery,
             filterType = filterType,
@@ -87,10 +85,8 @@ class UserListViewModel(
             //  Visibility State
             isFilterMenuOpened = state.isFilterMenuOpened,
             isFabMenuExpanded = state.isFabMenuExpanded,
-            isNotificationPermissionDialogOpened = state.isNotificationPermissionDialogOpened,
 
             //  Permission
-            isNotificationDialogForImportDataOpened = state.isNotificationDialogForImportDataOpened,
             isNotificationDialogForPrintCouponOpened = state.isNotificationDialogForPrintCouponOpened,
 
             //  Dialog Print Coupon
@@ -107,38 +103,15 @@ class UserListViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Lazily,
-        initialValue = UserManagementState()
+        initialValue = UserListState()
     )
 
-    fun onEvent(event: UserManagementEvent) {
+    fun onEvent(event: UserListEvent) {
         when (event) {
 
-            is UserManagementEvent.ImportDataEvent -> {
+            is UserListEvent.FilterEvent -> {
                 when (event) {
-                    UserManagementEvent.ImportDataEvent.OnClick -> {
-                        _currentState.update { currentState ->
-                            currentState.copy(
-                                isFabMenuExpanded = false,
-                                isNotificationDialogForImportDataOpened = true
-                            )
-                        }
-                    }
-
-                    is UserManagementEvent.ImportDataEvent.OnImportData -> {
-                        _currentState.update { currentState ->
-                            currentState.copy(
-                                shouldLaunchExcelLauncher = false
-                            )
-                        }
-
-                        importDataScheduler.execute(event.stringUri)
-                    }
-                }
-            }
-
-            is UserManagementEvent.FilterEvent -> {
-                when (event) {
-                    is UserManagementEvent.FilterEvent.OnClick -> {
+                    is UserListEvent.FilterEvent.OnClick -> {
                         _currentState.update { currentState ->
                             currentState.copy(
                                 isFilterMenuOpened = event.newState
@@ -146,7 +119,7 @@ class UserListViewModel(
                         }
                     }
 
-                    is UserManagementEvent.FilterEvent.OnValueChanged -> {
+                    is UserListEvent.FilterEvent.OnValueChanged -> {
                         _filterType.update { _ ->
                             event.newFilterType
                         }
@@ -160,39 +133,24 @@ class UserListViewModel(
                 }
             }
 
-            is UserManagementEvent.DialogPermissionEvent -> {
+            is UserListEvent.DialogPermissionEvent -> {
                 when (event) {
-                    UserManagementEvent.DialogPermissionEvent.OnGrantPermission -> {
-                        onEvent(UserManagementEvent.DialogPermissionEvent.OnContinueWithoutPermission)
+                    UserListEvent.DialogPermissionEvent.OnGrantPermission -> {
+                        onEvent(UserListEvent.DialogPermissionEvent.OnContinueWithoutPermission)
                     }
 
-                    UserManagementEvent.DialogPermissionEvent.OnContinueWithoutPermission -> {
-                        viewModelScope.launch {
-                            val state = state.value
-                            if (state.isNotificationDialogForImportDataOpened) {
-                                _currentState.update { currentState ->
-                                    currentState.copy(
-                                        isNotificationDialogForImportDataOpened = false,
-                                        isNotificationDialogForPrintCouponOpened = false,
-                                        shouldLaunchExcelLauncher = true
-                                    )
-                                }
-                            } else if (state.isNotificationDialogForPrintCouponOpened) {
-                                _currentState.update { currentState ->
-                                    currentState.copy(
-                                        isNotificationDialogForImportDataOpened = false,
-                                        isNotificationDialogForPrintCouponOpened = false,
-                                        isPrintingReminderOpened = true
-                                    )
-                                }
-                            }
+                    UserListEvent.DialogPermissionEvent.OnContinueWithoutPermission -> {
+                        _currentState.update { currentState ->
+                            currentState.copy(
+                                isNotificationDialogForPrintCouponOpened = false,
+                                isPrintingReminderOpened = true
+                            )
                         }
                     }
 
-                    UserManagementEvent.DialogPermissionEvent.OnDismiss -> {
+                    UserListEvent.DialogPermissionEvent.OnDismiss -> {
                         _currentState.update { currentState ->
                             currentState.copy(
-                                isNotificationDialogForImportDataOpened = false,
                                 isNotificationDialogForPrintCouponOpened = false
                             )
                         }
@@ -200,7 +158,7 @@ class UserListViewModel(
                 }
             }
 
-            is UserManagementEvent.OnSearchQueryChanged -> _searchQuery.update {
+            is UserListEvent.OnSearchQueryChanged -> _searchQuery.update {
                 event.newSearchQuery
             }
 
@@ -213,14 +171,14 @@ class UserListViewModel(
             }
 
             // UI Interaction
-            is UserManagementEvent.OnFabMenuStateClicked -> _currentState.update { currentState ->
+            is UserListEvent.OnFabMenuStateClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     isFabMenuExpanded = event.newFabMenuState
                 )
             }
 
 
-            is UserManagementEvent.OnPrintCouponClicked -> _currentState.update { currentState ->
+            is UserListEvent.OnPrintCouponClicked -> _currentState.update { currentState ->
                 if (event.isNotificationPermissionNeeded) {
                     currentState.copy(
                         isFabMenuExpanded = false,
@@ -235,13 +193,13 @@ class UserListViewModel(
             }
 
             //  Print Coupon Dialog
-            UserManagementEvent.OnPrintingReminderShouldBeDisplayed -> _currentState.update { currentState ->
+            UserListEvent.OnPrintingReminderShouldBeDisplayed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingReminderOpened = true
                 )
             }
 
-            UserManagementEvent.OnPrintingDialogShouldBeDisplayed -> _currentState.update { currentState ->
+            UserListEvent.OnPrintingDialogShouldBeDisplayed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingReminderOpened = false,
                     isPrintingDialogOpened = true
@@ -284,7 +242,7 @@ class UserListViewModel(
                 }
             }
 
-            UserManagementEvent.OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
+            UserListEvent.OnPrintCouponDialogDismissed -> _currentState.update { currentState ->
                 currentState.copy(
                     isPrintingDialogOpened = false,
                     dialogPrintCouponState = DialogPrintCouponState()
@@ -325,7 +283,7 @@ class UserListViewModel(
             }
             //  End Dialog Print Coupon
 
-            is UserManagementEvent.OnUserClicked -> _currentState.update { currentState ->
+            is UserListEvent.OnUserClicked -> _currentState.update { currentState ->
                 currentState.copy(
                     selectedUserIndex = event.index
                 )

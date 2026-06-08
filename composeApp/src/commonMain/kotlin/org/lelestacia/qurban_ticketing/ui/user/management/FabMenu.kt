@@ -4,7 +4,13 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButtonMenu
+import androidx.compose.material3.FloatingActionButtonMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,7 +21,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_add_member
-import qurbanticketing.composeapp.generated.resources.btn_import_data
 import qurbanticketing.composeapp.generated.resources.btn_print_coupon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -23,7 +28,6 @@ import qurbanticketing.composeapp.generated.resources.btn_print_coupon
 fun UserManagementFabMenu(
     isFabExpanded: Boolean,
     onFabStateChange: (Boolean) -> Unit,
-    onImportData: () -> Unit,
     onAddData: () -> Unit,
     onPrintCoupon: () -> Unit,
     modifier: Modifier = Modifier
@@ -60,23 +64,6 @@ fun UserManagementFabMenu(
             }
         },
         content = {
-            FloatingActionButtonMenuItem(
-                onClick = {
-                    lifecycle.handleWhenLifecycleResumed(onResumed = onImportData)
-                },
-                icon = {},
-                text = {
-                    Text(
-                        text = stringResource(Res.string.btn_import_data),
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    )
-                },
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-
             FloatingActionButtonMenuItem(
                 onClick = {
                     lifecycle.handleWhenLifecycleResumed(onResumed = onAddData)

@@ -32,7 +32,6 @@ val domainModule = module {
     viewModel {
         UserListViewModel(
             userRepository = get(),
-            importDataScheduler = get(qualifier = named(name = IMPORT_DATA_SCHEDULER)),
             printCouponScheduler = get(qualifier = named(name = PRINT_COUPON_SCHEDULER)),
         )
     }
@@ -40,6 +39,7 @@ val domainModule = module {
     viewModel {
         SettingViewModel(
             settingRepository = get(),
+            importDataScheduler = get(qualifier = named(name = IMPORT_DATA_SCHEDULER)),
             exportDataScheduler = get(qualifier = named(name = EXPORT_DATA_SCHEDULER))
         )
     }

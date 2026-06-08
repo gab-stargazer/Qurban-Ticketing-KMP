@@ -1,31 +1,29 @@
 package org.lelestacia.qurban_ticketing.ui.settings
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -36,28 +34,44 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent
+import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent.OnDismissPermissionDialog
 import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent.OnExportDataClicked
+import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent.OnImportData
+import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingEvent.OnImportDataClicked
 import org.lelestacia.qurban_ticketing.domain.state_event.setting.SettingState
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
+import org.lelestacia.qurban_ticketing.ui.component.NotificationPermissionDialog
 import org.lelestacia.qurban_ticketing.ui.dropdown.Language
 import org.lelestacia.qurban_ticketing.util.LocalScreenPadding
 import org.lelestacia.qurban_ticketing.util.handleWhenLifecycleResumed
+import org.lelestacia.qurban_ticketing.util.isNotGranted
 import org.lelestacia.qurban_ticketing.util.padding.CustomPadding
 import qurbanticketing.composeapp.generated.resources.Res
 import qurbanticketing.composeapp.generated.resources.btn_back_setting
 import qurbanticketing.composeapp.generated.resources.btn_export_data
+import qurbanticketing.composeapp.generated.resources.btn_import_data
 import qurbanticketing.composeapp.generated.resources.export_data_body
 import qurbanticketing.composeapp.generated.resources.export_data_label
+import qurbanticketing.composeapp.generated.resources.import_data_body
+import qurbanticketing.composeapp.generated.resources.import_data_label
 import qurbanticketing.composeapp.generated.resources.label_preferred_language
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalPermissionsApi::class
+)
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun SettingScreen(
@@ -68,47 +82,84 @@ fun SettingScreen(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle by lifecycleOwner.lifecycle.currentStateAsState()
+    val excelSelectionLauncher = rememberFilePickerLauncher(
+        type = FileKitType.File("xlsx")
+    ) { file ->
+        onEvent(
+            OnImportData(
+                stringUri = file?.path ?: return@rememberFilePickerLauncher
+            )
+        )
+    }
 
     var isLanguageDropDownMenuOpened: Boolean by remember {
         mutableStateOf(false)
     }
 
+    val notificationPermission =
+        rememberPermissionState(
+            permission = Manifest.permission.POST_NOTIFICATIONS,
+            onPermissionResult = { _ ->
+                onEvent(OnDismissPermissionDialog)
+            }
+        )
+
+    //  Dialog
+    if (state.isPermissionShownForExport || state.isPermissionShownForImport) {
+        NotificationPermissionDialog(
+            onDismiss = {
+                onEvent(OnDismissPermissionDialog)
+            },
+            onConfirmation = {
+                notificationPermission.launchPermissionRequest()
+            },
+            onDeny = {
+                if (state.isPermissionShownForExport) {
+                    onEvent(OnExportDataClicked(hasPermission = true))
+                } else {
+                    onEvent(OnDismissPermissionDialog)
+                    excelSelectionLauncher.launch()
+                }
+            }
+        )
+    }
+
+
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(resource = Res.string.btn_back_setting),
+                        style = MaterialTheme.typography.titleMediumEmphasized.copy(
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            lifecycle.handleWhenLifecycleResumed(onResumed = onBackPressed)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            )
+        },
         contentWindowInsets = WindowInsets(),
         modifier = modifier,
-    ) { _ ->
+    ) { padding ->
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .padding(padding)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(top = 32.dp, start = 4.dp)
-            ) {
-                IconButton(
-                    onClick = {
-                        lifecycle.handleWhenLifecycleResumed(onResumed = onBackPressed)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                Text(
-                    text = stringResource(resource = Res.string.btn_back_setting),
-                    style = MaterialTheme.typography.titleMediumEmphasized.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                )
-            }
-
             ExposedDropdownMenuBox(
                 expanded = isLanguageDropDownMenuOpened,
                 onExpandedChange = { newState ->
@@ -169,46 +220,43 @@ fun SettingScreen(
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = LocalScreenPadding.current.horizontal)
-                    .padding(top = LocalScreenPadding.current.vertical)
-            ) {
-                Text(
-                    stringResource(Res.string.export_data_label),
-                    style = MaterialTheme.typography.labelMediumEmphasized,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
+            ExportImport(
+                title = stringResource(Res.string.export_data_label),
+                body = stringResource(Res.string.export_data_body),
+                buttonLabel = stringResource(Res.string.btn_export_data),
+                onButtonClicked = {
+                    lifecycle.handleWhenLifecycleResumed {
+                        //  Check for notification only
+                        if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
+                            onEvent(OnExportDataClicked(hasPermission = true))
+                        } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
+                            onEvent(OnExportDataClicked(hasPermission = false))
+                        } else {
+                            onEvent(OnExportDataClicked(hasPermission = true))
+                        }
+                    }
+                },
+                modifier = Modifier.padding(top = LocalScreenPadding.current.vertical)
+            )
 
-                Text(
-                    text = stringResource(Res.string.export_data_body),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        textAlign = TextAlign.Justify
-                    ),
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        vertical = LocalScreenPadding.current.vertical - 4.dp,
-                        horizontal = LocalScreenPadding.current.horizontal
-                    )
-                )
-
-                OutlinedButton(
-                    onClick = {
-                        onEvent(OnExportDataClicked)
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onSurface.copy(0.9F)
-                    ),
-                    shape = RoundedCornerShape(25F),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(Res.string.btn_export_data))
-                }
-            }
+            ExportImport(
+                title = stringResource(Res.string.import_data_label),
+                body = stringResource(Res.string.import_data_body),
+                buttonLabel = stringResource(Res.string.btn_import_data),
+                onButtonClicked = {
+                    lifecycle.handleWhenLifecycleResumed {
+                        //  Check for notification only
+                        if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
+                            excelSelectionLauncher.launch()
+                        } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
+                            onEvent(OnImportDataClicked(hasPermission = false))
+                        } else {
+                            excelSelectionLauncher.launch()
+                        }
+                    }
+                },
+                modifier = Modifier.padding(top = LocalScreenPadding.current.vertical)
+            )
         }
     }
 }

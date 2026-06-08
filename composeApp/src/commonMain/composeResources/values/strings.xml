@@ -47,13 +47,13 @@
     <string name="btn_edit_data">Ubah Data</string>
     <string name="btn_delete_data">Hapus Data</string>
     <string name="btn_grant_permission">Berikan Izin</string>
-    <string name="btn_import_data">Impor Data Peserta/Penerima</string>
     <string name="btn_print_coupon">Cetak Kupon</string>
     <string name="btn_select">Pilih</string>
     <string name="btn_show_app_information">Informasi\nAplikasi</string>
     <string name="btn_show_user_management">Manajemen\nUser</string>
     <string name="btn_understand">Mengerti</string>
     <string name="btn_export_data">Ekspor Data</string>
+    <string name="btn_import_data">Impor Data</string>
 
     <!--Filter-->
     <string name="filter_type_all">Semua</string>
@@ -101,8 +101,10 @@
     <string name="lang_en">Inggris (US)</string>
 
     <!--Settings-->
-    <string name="export_data_label">Ekspor Data Peserta/Penerima</string>
-    <string name="export_data_body">Data dari Peserta/Penerima akan diekspor menjadi file Excel yang dapat digunakan untuk melakukan import data dari perangkat lain menggunakan aplikasi ini.</string>
+    <string name="export_data_label">Ekspor Data Penerima/Peserta</string>
+    <string name="export_data_body">Data dari Penerima/Peserta akan diekspor menjadi file Excel yang dapat digunakan untuk melakukan import data dari perangkat lain menggunakan aplikasi ini.</string>
+    <string name="import_data_label">Impor Data Penerima/Peserta</string>
+    <string name="import_data_body">Impor data Penerima/Peserta dari file Excel.</string>
 
     <!--Information-->
     <string name="info_designer">Desainer</string>

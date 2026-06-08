@@ -12,21 +12,14 @@ import org.lelestacia.qurban_ticketing.ui.dropdown.FilterType.All
 
 @Immutable
 @optics
-data class UserManagementState(
+data class UserListState(
     val searchQuery: String = "",
     val filterType: FilterType = All,
     val isFilterMenuOpened: Boolean = false,
     val isFabMenuExpanded: Boolean = false,
-    val isNotificationPermissionDialogOpened: Boolean = false,
-
-    val isNotificationDialogForImportDataOpened: Boolean = false,
-    val isNotificationDialogForPrintCouponOpened: Boolean = false,
-
 
     //  Permission Dialog
-
-
-
+    val isNotificationDialogForPrintCouponOpened: Boolean = false,
 
     //  Create Coupon
     val isPrintingReminderOpened: Boolean = false,
@@ -44,40 +37,31 @@ data class UserManagementState(
     companion object
 }
 
-sealed interface UserManagementEvent {
+sealed interface UserListEvent {
     data class OnSearchQueryChanged(
         val newSearchQuery: String,
-    ) : UserManagementEvent
+    ) : UserListEvent
 
     data class OnUserClicked(
         val index: Int?,
-    ) : UserManagementEvent
+    ) : UserListEvent
 
     //  UI State Event
     data class OnFabMenuStateClicked(
         val newFabMenuState: Boolean
-    ) : UserManagementEvent
+    ) : UserListEvent
 
 
     //  Print Coupon
-    data class OnPrintCouponClicked(val isNotificationPermissionNeeded: Boolean) : UserManagementEvent
-    data object OnPrintCouponDialogDismissed : UserManagementEvent
-    data object OnPrintingReminderShouldBeDisplayed: UserManagementEvent
-    data object OnPrintingDialogShouldBeDisplayed: UserManagementEvent
-
-
-    /**
-     *  Import Data
-     */
-    sealed interface ImportDataEvent : UserManagementEvent {
-        data object OnClick : ImportDataEvent
-        data class OnImportData(val stringUri: String) : ImportDataEvent
-    }
+    data class OnPrintCouponClicked(val isNotificationPermissionNeeded: Boolean) : UserListEvent
+    data object OnPrintCouponDialogDismissed : UserListEvent
+    data object OnPrintingReminderShouldBeDisplayed: UserListEvent
+    data object OnPrintingDialogShouldBeDisplayed: UserListEvent
 
     /**
      *  Filter Event
      */
-    sealed interface FilterEvent : UserManagementEvent {
+    sealed interface FilterEvent : UserListEvent {
         data class OnClick(val newState: Boolean) : FilterEvent
         data class OnValueChanged(val newFilterType: FilterType) : FilterEvent
     }
@@ -85,7 +69,7 @@ sealed interface UserManagementEvent {
     /**
      *  Notification Permission Dialog
      */
-    sealed interface DialogPermissionEvent : UserManagementEvent {
+    sealed interface DialogPermissionEvent : UserListEvent {
         data object OnGrantPermission : DialogPermissionEvent
         data object OnContinueWithoutPermission : DialogPermissionEvent
         data object OnDismiss : DialogPermissionEvent

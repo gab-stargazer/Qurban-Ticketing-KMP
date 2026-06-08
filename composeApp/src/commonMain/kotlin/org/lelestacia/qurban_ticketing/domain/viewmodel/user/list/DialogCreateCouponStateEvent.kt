@@ -44,7 +44,7 @@ data class DialogPrintCouponState (
     companion object
 }
 
-sealed interface DialogPrintCouponEvent : UserManagementEvent {
+sealed interface DialogPrintCouponEvent : UserListEvent {
     data class OnDatePicked(val selectedDate: Long) : DialogPrintCouponEvent
     data object OnSelectedPickupDateChanged : DialogPrintCouponEvent
     data class OnStartTimePicked(val hour: Hour, val minute: Minute) : DialogPrintCouponEvent

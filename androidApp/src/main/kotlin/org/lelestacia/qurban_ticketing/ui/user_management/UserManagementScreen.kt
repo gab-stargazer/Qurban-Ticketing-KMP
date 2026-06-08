@@ -29,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,22 +48,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
 import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.DialogPrintCouponEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.DialogPermissionEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.FilterEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.ImportDataEvent
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnFabMenuStateClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintCouponClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintCouponDialogDismissed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnPrintingDialogShouldBeDisplayed
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnSearchQueryChanged
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementEvent.OnUserClicked
-import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserManagementState
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.DialogPermissionEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.FilterEvent
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnFabMenuStateClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnPrintCouponClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnPrintCouponDialogDismissed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnPrintingDialogShouldBeDisplayed
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnSearchQueryChanged
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListEvent.OnUserClicked
+import org.lelestacia.qurban_ticketing.domain.viewmodel.user.list.UserListState
 import org.lelestacia.qurban_ticketing.theme.QurbanTicketingTheme
 import org.lelestacia.qurban_ticketing.ui.component.CustomTextField
 import org.lelestacia.qurban_ticketing.ui.component.NotificationPermissionDialog
@@ -91,8 +86,8 @@ import qurbanticketing.composeapp.generated.resources.tv_no_participant_data
 )
 @Composable
 fun UserManagementScreen(
-    state: UserManagementState,
-    onEvent: (UserManagementEvent) -> Unit,
+    state: UserListState,
+    onEvent: (UserListEvent) -> Unit,
     onNavigateTo: (Any) -> Unit,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
@@ -104,19 +99,6 @@ fun UserManagementScreen(
 
     val lifecycle by lifecycleOwner.lifecycle.currentStateAsState()
     val users = state.users.collectAsLazyPagingItems()
-    val excelSelectionLauncher = rememberFilePickerLauncher(
-        type = FileKitType.File("xlsx")
-    ) { file ->
-        onEvent(
-            ImportDataEvent.OnImportData(
-                stringUri = file?.path ?: return@rememberFilePickerLauncher
-            )
-        )
-    }
-
-    LaunchedEffect(state.shouldLaunchExcelLauncher) {
-        if (state.shouldLaunchExcelLauncher) excelSelectionLauncher.launch()
-    }
 
     //  Permission
     val notificationPermission =
@@ -128,7 +110,7 @@ fun UserManagementScreen(
         )
 
     //  Dialog
-    if (state.isNotificationDialogForImportDataOpened || state.isNotificationDialogForPrintCouponOpened) {
+    if (state.isNotificationDialogForPrintCouponOpened) {
         NotificationPermissionDialog(
             onDismiss = {
                 onEvent(DialogPermissionEvent.OnDismiss)
@@ -188,19 +170,6 @@ fun UserManagementScreen(
                 isFabExpanded = state.isFabMenuExpanded,
                 onFabStateChange =  { newState ->
                     onEvent(OnFabMenuStateClicked(newState))
-                },
-                onImportData = {
-                    lifecycle.handleWhenLifecycleResumed {
-                        //  Check for notification only
-                        if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isGranted) {
-                            excelSelectionLauncher.launch()
-                        } else if (Build.VERSION.SDK_INT >= 33 && notificationPermission.status.isNotGranted()) {
-                            onEvent(ImportDataEvent.OnClick)
-                        } else {
-                            onEvent(OnFabMenuStateClicked(false))
-                            excelSelectionLauncher.launch()
-                        }
-                    }
                 },
                 onAddData = {
                     lifecycle.handleWhenLifecycleResumed {
@@ -422,7 +391,7 @@ private fun PreviewUserManagementScreen() {
     ) {
         QurbanTicketingTheme {
             UserManagementScreen(
-                state = UserManagementState(),
+                state = UserListState(),
                 onEvent = {},
                 onNavigateTo = {
 
